@@ -3,6 +3,7 @@ node_modules
 
 # compiled output
 dist
+xcom2charpool-*.tgz
 
 # System Files
 .DS_Store
