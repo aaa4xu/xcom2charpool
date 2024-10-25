@@ -13,100 +13,102 @@ import { ArrayFactory } from './Arrays/ArrayFactory';
 import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
 
 export class Unpacker {
-  public static types: Record<string, PropertyFactory<unknown>> = {
-    [ArrayProperty.name]: ArrayProperty,
-    [BoolProperty.name]: BoolProperty,
-    [ByteProperty.name]: ByteProperty,
-    [IntProperty.name]: IntProperty,
-    [NameProperty.name]: NameProperty,
-    [StrProperty.name]: StrProperty,
-    [StructProperty.name]: StructProperty,
-  };
+    public static types: Record<string, PropertyFactory<unknown>> = {
+        [ArrayProperty.name]: ArrayProperty,
+        [BoolProperty.name]: BoolProperty,
+        [ByteProperty.name]: ByteProperty,
+        [IntProperty.name]: IntProperty,
+        [NameProperty.name]: NameProperty,
+        [StrProperty.name]: StrProperty,
+        [StructProperty.name]: StructProperty,
+    };
 
-  public static knownArrays: Record<string, ArrayFactory<unknown>> = {
-    CharacterPool: ArrayOfStructs,
-    ExtraDatas: ArrayOfStructs,
-    AppearanceStore: ArrayOfStructs,
-    CharacterPoolLoadout: ArrayOfStructs,
-    UniformSettings: ArrayOfStructs,
-    CosmeticOptions: ArrayOfStructs,
-  };
+    public static knownArrays: Record<string, ArrayFactory<unknown>> = {
+        CharacterPool: ArrayOfStructs,
+        ExtraDatas: ArrayOfStructs,
+        AppearanceStore: ArrayOfStructs,
+        CharacterPoolLoadout: ArrayOfStructs,
+        UniformSettings: ArrayOfStructs,
+        CosmeticOptions: ArrayOfStructs,
+    };
 
-  public get position() {
-    return this.reader.position;
-  }
-
-  public get length() {
-    return this.reader.length;
-  }
-
-  public constructor(protected readonly reader: Reader) {}
-
-  public readFile() {
-    const magic = this.reader.uint32();
-
-    if (magic !== 0xffffffff) {
-      throw new Error(`Incorrect file magic 0x${magic.toString(16).padStart(8, '0')}`);
+    public get position() {
+        return this.reader.position;
     }
 
-    const state = this.properties();
-
-    // Почему-то внизу файла присобачен еще один массив
-    const arr = ArrayProperty.from(
-      this.reader,
-      CharacterPoolDataElements.name,
-      this.reader.length - this.reader.position
-    ) as ArrayProperty;
-    const data = new CharacterPoolDataElements(arr, (reader: Reader) => new Unpacker(reader));
-
-    if (this.reader.position < this.reader.length) {
-      throw new Error(`Reader is not in the end of file! ${this.reader.length - this.reader.position} bytes remains`);
+    public get length() {
+        return this.reader.length;
     }
 
-    return { state, data };
-  }
+    public constructor(protected readonly reader: Reader) {}
 
-  public properties() {
-    const props: Record<string, any> = {};
+    public readFile() {
+        const magic = this.reader.uint32();
 
-    while (this.reader.position < this.reader.length) {
-      const prop = this.property();
-      if (!prop) return props;
+        if (magic !== 0xffffffff) {
+            throw new Error(`Incorrect file magic 0x${magic.toString(16).padStart(8, '0')}`);
+        }
 
-      props[prop.name] = prop.property;
+        const state = this.properties();
+
+        // Почему-то внизу файла присобачен еще один массив
+        const arr = ArrayProperty.from(
+            this.reader,
+            CharacterPoolDataElements.name,
+            this.reader.length - this.reader.position,
+        ) as ArrayProperty;
+        const data = new CharacterPoolDataElements(arr, (reader: Reader) => new Unpacker(reader));
+
+        if (this.reader.position < this.reader.length) {
+            throw new Error(
+                `Reader is not in the end of file! ${this.reader.length - this.reader.position} bytes remains`,
+            );
+        }
+
+        return { state, data };
     }
 
-    return props;
-  }
+    public properties() {
+        const props: Record<string, any> = {};
 
-  public property() {
-    const name = this.reader.string();
-    this.reader.padding();
+        while (this.reader.position < this.reader.length) {
+            const prop = this.property();
+            if (!prop) return props;
 
-    if (name === NoneProperty.PropertyName) return;
+            props[prop.name] = prop.property;
+        }
 
-    const type = this.reader.string();
-    this.reader.padding();
-
-    const factory = (<typeof Unpacker>this.constructor).types[type];
-    if (!factory) {
-      throw new Error(`Unknown property type ${type} with name ${name}`);
+        return props;
     }
 
-    const size = this.reader.uint32();
-    this.reader.padding();
+    public property() {
+        const name = this.reader.string();
+        this.reader.padding();
 
-    const property = factory.from(this.reader, name, size, (reader: Reader) => new Unpacker(reader));
+        if (name === NoneProperty.PropertyName) return;
 
-    if (property instanceof ArrayProperty) {
-      const factory = (<typeof Unpacker>this.constructor).knownArrays[name];
-      if (factory) {
-        return { name, property: factory.from(property, name, (reader: Reader) => new Unpacker(reader)) };
-      } else {
-        console.warn(`[Unpacker] Array of unknown type ${name}`);
-      }
+        const type = this.reader.string();
+        this.reader.padding();
+
+        const factory = (<typeof Unpacker>this.constructor).types[type];
+        if (!factory) {
+            throw new Error(`Unknown property type ${type} with name ${name}`);
+        }
+
+        const size = this.reader.uint32();
+        this.reader.padding();
+
+        const property = factory.from(this.reader, name, size, (reader: Reader) => new Unpacker(reader));
+
+        if (property instanceof ArrayProperty) {
+            const factory = (<typeof Unpacker>this.constructor).knownArrays[name];
+            if (factory) {
+                return { name, property: factory.from(property, name, (reader: Reader) => new Unpacker(reader)) };
+            } else {
+                console.warn(`[Unpacker] Array of unknown type ${name}`);
+            }
+        }
+
+        return { name, property };
     }
-
-    return { name, property };
-  }
 }
