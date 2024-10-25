@@ -1,13 +1,11 @@
-name: ci
+name: Node.js Package
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  release:
+    types: [created]
 
 jobs:
-  build:
+  publish-npm:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,4 +29,6 @@ jobs:
       run: pnpm install
     
     - run: pnpm build
-    - run: pnpm test
+    - run: pnpm publish --dry-run
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.npm_token}}
