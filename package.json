@@ -1,0 +1,12 @@
+{
+  "name": "xcom2charpool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["xcom", "xcom2", "charpool"],
+  "author": "aaa4xu",
+  "license": "MIT"
+}
