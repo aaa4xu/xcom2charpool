@@ -11,7 +11,51 @@ npm install xcom2charpool
 
 ## Usage
 
-TODO
+```typescript
+import { Unpacker, ArrayBufferReader } from 'xcom2charpool';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import * as os from 'node:os';
+
+async function main() {
+    const charpoolPath = path.join(os.homedir(), 'Documents/My Games/XCOM2 War of the Chosen/XComGame/CharacterPool');
+
+    // Read data from the current character pool
+    const { state, data } = await readCharpool(charpoolPath);
+    
+    console.log('Soldiers:');
+    for(const soldier of data.items) {
+        console.log(`- ${soldier.value.strFirstName} ${soldier.value.strNickName} ${soldier.value.strLastName}`);
+    }
+
+    // Change name for characters
+    for(const char of data.items) {
+      char.value.strFirstName = 'XCom';
+      char.value.strLastName = 'Studio';
+    }
+
+    // Save data to new character pool
+    await writeCharpool(path.join(charpoolPath, 'Importable/XCom-Studio.bin'), state, data);
+}
+
+// Function to read and parse a charpool binary file
+async function readCharpool(filePath: string) {
+    // Read the binary file
+    const buffer = await fs.readFile(filePath);
+  
+    // Create a DataView from the buffer
+    const dataView = new DataView(buffer.buffer);
+  
+    // Initialize the reader and unpacker
+    const reader = new ArrayBufferReader(dataView);
+    const unpacker = new Unpacker(reader);
+  
+    // Parse the file
+    return unpacker.readFile();
+}
+
+main();
+```
 
 ## API Reference
 
