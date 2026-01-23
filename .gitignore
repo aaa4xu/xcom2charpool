@@ -8,3 +8,6 @@ xcom2charpool-*.tgz
 # System Files
 .DS_Store
 Thumbs.db
+
+exp.ts
+/.idea
