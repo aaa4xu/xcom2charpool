@@ -9,7 +9,18 @@ export class ArrayProperty {
     ) {}
 
     public static from(reader: Reader, name: string, size: number) {
+        if (size < 4) {
+            throw new Error('ArrayProperty size is too small');
+        }
+
+        if (reader.position + size > reader.length) {
+            throw new Error('ArrayProperty size exceeds remaining bytes');
+        }
+
         const length = reader.int32();
+        if (length < 0) {
+            throw new Error('ArrayProperty length is negative');
+        }
         return new this(length, reader.subarray(size - 4));
     }
 

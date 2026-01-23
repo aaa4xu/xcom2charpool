@@ -32,9 +32,7 @@ export class StructProperty {
         // Record the start position for size calculation
         const startPosition = target.position;
         packer.writeProperties(value.value);
-        if (Object.keys(value.value).length > 0) {
-            NoneProperty.to(target);
-        }
+        NoneProperty.to(target);
         // Record the end position
         const endPosition = target.position;
 
