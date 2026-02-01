@@ -1,12 +1,10 @@
 import type { Reader } from '../Reader';
+import { UE4StringCodec } from '../Core/UE4StringCodec';
 
 /** Implementation based on browser's DataView */
 export class ArrayBufferReader implements Reader {
     #position = 0;
     #length: number;
-
-    protected static readonly ASCIIDecoder = new TextDecoder('windows-1252');
-    protected static readonly utf16Decoder = new TextDecoder('utf-16le');
 
     public constructor(
         private readonly source: DataView,
@@ -72,28 +70,7 @@ export class ArrayBufferReader implements Reader {
     }
 
     public string() {
-        let length = this.int32();
-        if (length === 0) return '';
-
-        const isUTF16 = length < 0;
-
-        // Adjust length for UTF-16 encoding
-        if (isUTF16) length = length * -2;
-
-        this.ensureAvailable(length, 'string');
-
-        const start = this.source.byteOffset + this.#position;
-        const bytes = new Uint8Array(this.source.buffer, start, length);
-        this.#position += length;
-
-        if (bytes[bytes.length - 1] !== 0x00) {
-            // Strings are expected to be null-terminated
-            throw new Error(`Incorrect string size ${length}`);
-        }
-
-        const decoder = isUTF16 ? ArrayBufferReader.utf16Decoder : ArrayBufferReader.ASCIIDecoder;
-        // Exclude the null terminator
-        return decoder.decode(bytes.subarray(0, bytes.length - (isUTF16 ? 2 : 1)));
+        return UE4StringCodec.read(this);
     }
 
     public bytes(length: number): Uint8Array {

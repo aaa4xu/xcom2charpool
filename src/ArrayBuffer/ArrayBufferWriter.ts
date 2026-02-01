@@ -1,4 +1,5 @@
 import { Writer } from '../Writer';
+import { UE4StringCodec } from '../Core/UE4StringCodec';
 
 /** Implementation based on browser's DataView */
 export class ArrayBufferWriter implements Writer {
@@ -10,24 +11,6 @@ export class ArrayBufferWriter implements Writer {
     public constructor(initialSize = 1024) {
         this.#buffer = new ArrayBuffer(initialSize);
         this.#dataView = new DataView(this.#buffer);
-    }
-
-    /**
-     * Ensures the internal buffer has enough capacity to write additional bytes.
-     */
-    private ensureCapacity(additionalBytes: number) {
-        const requiredLength = this.position + additionalBytes;
-        if (requiredLength > this.#buffer.byteLength) {
-            // Need to resize buffer
-            let newBufferLength = this.#buffer.byteLength * 2;
-            while (newBufferLength < requiredLength) {
-                newBufferLength *= 2;
-            }
-            const newBuffer = new ArrayBuffer(newBufferLength);
-            new Uint8Array(newBuffer).set(new Uint8Array(this.#buffer));
-            this.#buffer = newBuffer;
-            this.#dataView = new DataView(this.#buffer);
-        }
     }
 
     /**
@@ -72,70 +55,10 @@ export class ArrayBufferWriter implements Writer {
     }
 
     /**
-     * Encodes a string into a Uint8Array using UTF-16LE encoding.
+     * Writes a string using UE4StringCodec
      */
-    private encodeUTF16LE(str: string): Uint8Array {
-        const buf = new ArrayBuffer(str.length * 2);
-        const bufView = new Uint16Array(buf);
-        for (let i = 0; i < str.length; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
-        return new Uint8Array(buf);
-    }
-
-    private encodeASCII(str: string): Uint8Array {
-        const buf = new ArrayBuffer(str.length);
-        const bufView = new Uint8Array(buf);
-        for (let i = 0; i < str.length; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
-        return bufView;
-    }
-
-    /**
-     * Writes a string with a length prefix and null-termination.
-     * Automatically detects the encoding based on the characters used.
-     * Uses UTF-8 for ASCII strings and UTF-16LE for strings with non-ASCII characters.
-     */
-    string(value: string) {
-        if (value === '') {
-            this.int32(0);
-            return this;
-        }
-
-        // Detect if the string contains any non-ASCII characters
-        // eslint-disable-next-line no-control-regex
-        const isAscii = /^[\x00-\xFF]*$/.test(value);
-
-        let encoded: Uint8Array;
-        if (isAscii) {
-            // Use UTF-8 encoding
-            encoded = this.encodeASCII(value);
-            // Add null terminator
-            const totalLength = encoded.length + 1;
-            this.int32(totalLength);
-            this.ensureCapacity(totalLength);
-            const targetArray = new Uint8Array(this.#buffer, this.position, totalLength);
-            targetArray.set(encoded);
-            targetArray[encoded.length] = 0x00; // null terminator
-            this.position += totalLength;
-            this.#length = Math.max(this.#length, this.position);
-        } else {
-            // Use UTF-16LE encoding
-            encoded = this.encodeUTF16LE(value);
-            // Add null terminator (two bytes)
-            const totalLength = encoded.length + 2;
-            const lengthPrefix = -((encoded.length + 2) / 2); // Negative length in number of 16-bit code units
-            this.int32(lengthPrefix);
-            this.ensureCapacity(totalLength);
-            const targetArray = new Uint8Array(this.#buffer, this.position, totalLength);
-            targetArray.set(encoded);
-            targetArray[encoded.length] = 0x00; // null terminator (low byte)
-            targetArray[encoded.length + 1] = 0x00; // null terminator (high byte)
-            this.position += totalLength;
-            this.#length = Math.max(this.#length, this.position);
-        }
-
+    public string(value: string) {
+        UE4StringCodec.write(this, value);
         return this;
     }
 
@@ -153,5 +76,23 @@ export class ArrayBufferWriter implements Writer {
         this.position += value.length;
         this.#length = Math.max(this.#length, this.position);
         return this;
+    }
+
+    /**
+     * Ensures the internal buffer has enough capacity to write additional bytes.
+     */
+    private ensureCapacity(additionalBytes: number) {
+        const requiredLength = this.position + additionalBytes;
+        if (requiredLength > this.#buffer.byteLength) {
+            // Need to resize buffer
+            let newBufferLength = this.#buffer.byteLength * 2;
+            while (newBufferLength < requiredLength) {
+                newBufferLength *= 2;
+            }
+            const newBuffer = new ArrayBuffer(newBufferLength);
+            new Uint8Array(newBuffer).set(new Uint8Array(this.#buffer));
+            this.#buffer = newBuffer;
+            this.#dataView = new DataView(this.#buffer);
+        }
     }
 }

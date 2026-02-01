@@ -38,7 +38,7 @@ describe('NameProperty', () => {
         const bytes = Uint8Array.from([...int32Bytes(2), 0x41, 0x01]);
         const reader = new ArrayBufferReader(new DataView(bytes.buffer));
 
-        expect(() => NameProperty.from(reader, 'BadName', 0)).toThrow(/Incorrect string size/);
+        expect(() => NameProperty.from(reader, 'BadName', 0)).toThrow(/Invalid FString ANSI terminator/);
     });
 
     test('throws on missing unk bytes', () => {
