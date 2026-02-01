@@ -1,8 +1,13 @@
 import type { Reader } from '../Core/Reader';
 import { ArrayProperty } from '../Core/Properties/ArrayProperty';
 import { Unpacker as BaseUnpacker } from '../Core/Unpacker';
+import { CharacterPoolRegistry } from './CharacterPoolRegistry';
 
 export class CharacterPoolUnpacker extends BaseUnpacker {
+    public constructor(reader: Reader, registry = new CharacterPoolRegistry()) {
+        super(reader, registry);
+    }
+
     public readFile() {
         const magic = this.reader.uint32();
 

@@ -2,8 +2,14 @@ import { ArrayProperty } from '../Core/Properties/ArrayProperty';
 import { NoneProperty } from '../Core/Properties/NoneProperty';
 import { TypedArray } from '../Core/Arrays/TypedArray';
 import { Packer as CorePacker } from '../Core/Packer';
+import { CharacterPoolRegistry } from './CharacterPoolRegistry';
+import type { Writer } from '../Core/Writer';
 
 export class CharacterPoolPacker extends CorePacker {
+    public constructor(writer: Writer, registry = new CharacterPoolRegistry()) {
+        super(writer, registry);
+    }
+
     public writeFile(data: { state: Record<string, any>; data: TypedArray<unknown> | readonly unknown[] }) {
         // Write the magic number
         this.writer.uint32(0xffffffff);
