@@ -3,6 +3,8 @@ import type { Writer } from '../Writer';
 
 /** Enum */
 export class ByteProperty {
+    public static readonly type = 'ByteProperty';
+
     public constructor(
         public readonly type: string,
         public readonly value: string,

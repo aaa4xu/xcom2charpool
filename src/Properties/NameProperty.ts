@@ -8,6 +8,8 @@ import type { Writer } from '../Writer';
  * Instance stored internally as 1 more than actual, so zero'd memory will be the default, no-instance case.
  */
 export class NameProperty {
+    public static readonly type = 'NameProperty';
+
     public constructor(
         public readonly value: string,
         public readonly instanceId: number,

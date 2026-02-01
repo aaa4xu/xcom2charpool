@@ -1,6 +1,7 @@
 import type { Writer } from '../Writer';
 
 export class NoneProperty {
+    public static readonly type = 'NoneProperty';
     public static readonly PropertyName = 'None';
 
     public static to(target: Writer) {

@@ -4,6 +4,8 @@ import { Packer } from '../Packer';
 import { NoneProperty } from './NoneProperty';
 
 export class StructProperty {
+    public static readonly type = 'StructProperty';
+
     public constructor(
         public readonly type: string,
         public readonly value: Record<string, any>,

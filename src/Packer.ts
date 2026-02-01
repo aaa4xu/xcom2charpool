@@ -13,13 +13,13 @@ import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
 
 export class Packer {
     public static types: Record<string, PropertyFactory<unknown>> = {
-        [ArrayProperty.name]: ArrayProperty,
-        [BoolProperty.name]: BoolProperty,
-        [ByteProperty.name]: ByteProperty,
-        [IntProperty.name]: IntProperty,
-        [NameProperty.name]: NameProperty,
-        [StrProperty.name]: StrProperty,
-        [StructProperty.name]: StructProperty,
+        [ArrayProperty.type]: ArrayProperty,
+        [BoolProperty.type]: BoolProperty,
+        [ByteProperty.type]: ByteProperty,
+        [IntProperty.type]: IntProperty,
+        [NameProperty.type]: NameProperty,
+        [StrProperty.type]: StrProperty,
+        [StructProperty.type]: StructProperty,
     };
 
     public constructor(protected readonly writer: Writer) {}

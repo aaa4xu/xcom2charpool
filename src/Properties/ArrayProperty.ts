@@ -3,6 +3,8 @@ import type { Writer } from '../Writer';
 import { Packer } from '../Packer';
 
 export class ArrayProperty {
+    public static readonly type = 'ArrayProperty';
+
     public constructor(
         public readonly length: number,
         public readonly reader: Reader,
