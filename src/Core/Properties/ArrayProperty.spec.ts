@@ -76,6 +76,23 @@ describe('ArrayProperty', () => {
 
         expect(new Uint8Array(writer.getBuffer())).toStrictEqual(Uint8Array.from(int32Bytes(0)));
     });
+
+    test('to preserves raw payload for unknown array types', () => {
+        const length = 3;
+        const payload = Uint8Array.from([0x10, 0x20, 0x30, 0x40, 0x50]);
+        const bytes = Uint8Array.from([...int32Bytes(length), ...payload, 0x7f]);
+        const reader = new ArrayBufferReader(new DataView(bytes.buffer));
+        const array = ArrayProperty.from(reader, 'UnknownArray', 4 + payload.length);
+
+        expect(reader.byte()).toBe(0x7f);
+
+        const writer = new ArrayBufferWriter();
+        const packer = new Packer(writer, new Registry());
+        ArrayProperty.to(writer, array, packer);
+
+        const expected = Uint8Array.from([...int32Bytes(length), ...payload]);
+        expect(new Uint8Array(writer.getBuffer())).toStrictEqual(expected);
+    });
 });
 
 function int32Bytes(value: number) {

@@ -31,7 +31,16 @@ export class ArrayProperty {
         return new this(length, reader.subarray(size - 4));
     }
 
-    public static to<T>(target: Writer, value: readonly T[], packer: Packer) {
+    public static to<T>(target: Writer, value: readonly T[] | ArrayProperty, packer: Packer) {
+        if (value instanceof ArrayProperty) {
+            target.int32(value.length);
+            const remaining = value.reader.length - value.reader.position;
+            if (remaining > 0) {
+                target.bytes(value.reader.bytes(remaining));
+            }
+            return;
+        }
+
         // Write the length of the array
         target.int32(value.length);
 
