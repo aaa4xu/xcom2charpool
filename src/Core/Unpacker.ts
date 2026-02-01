@@ -61,6 +61,7 @@ export class Unpacker {
                     property: factory.from(property, name, (reader: Reader) => new Unpacker(reader, this.registry)),
                 };
             } else {
+                console.warn(`Unknown array property type ${name} with type ${type}`);
                 return { name, property };
             }
         }
