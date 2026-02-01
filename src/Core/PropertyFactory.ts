@@ -1,7 +1,7 @@
 import type { Reader } from './Reader';
 import type { Writer } from './Writer';
-import { Unpacker } from '../Unpacker';
-import { Packer } from '../Packer';
+import type { Packer } from './Packer';
+import type { Unpacker } from './Unpacker';
 
 export interface PropertyFactory<T> {
     readonly type: string;

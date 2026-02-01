@@ -1,24 +1,26 @@
-import { Unpacker } from '../../Unpacker';
 import { ArrayBufferReader } from './ArrayBufferReader';
 import { Reader } from '../Reader';
 import { binary as cases } from './__fixtures__/binary';
-import { ArrayOfInt } from '../../Arrays/ArrayOfInt';
+import { TypedArray } from '../Arrays/TypedArray';
+import { IntProperty } from '../Properties/IntProperty';
 import { Registry } from '../Registry';
+import { Unpacker } from '../Unpacker';
 
 describe('ArrayBufferReader', () => {
     test.each(Object.entries(cases).map(([name, config]) => [name, config.name, config.value, config.bytes]))(
         'should read %s',
         (_, name, expected, bytes) => {
-            const unpacker = new Unpacker(reader(bytes), new Registry({
-                arrays: new Map(
-                    Object.entries({
-                        TestArr3: ArrayOfInt,
-                    }),
-                ),
-            }));
+            const registry = new Registry();
+            registry.registerArray('TestArr3', TypedArray.of(IntProperty));
+
+            const unpacker = new Unpacker(reader(bytes), registry);
             const value = unpacker.property()!;
             expect(value.name).toBe(name);
-            expect(value.property).toStrictEqual(expected);
+            if (value.property instanceof TypedArray) {
+                expect(value.property.items).toStrictEqual(expected);
+            } else {
+                expect(value.property).toStrictEqual(expected);
+            }
             expect(unpacker.position).toBe(unpacker.length);
         },
     );

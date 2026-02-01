@@ -1,12 +1,13 @@
 import { statSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { Unpacker } from './Unpacker';
-import { Packer } from './Packer';
+import crypto from 'node:crypto';
+import { CharacterPoolUnpacker } from './CharacterPool/CharacterPoolUnpacker';
+import { CharacterPoolPacker } from './CharacterPool/CharacterPoolPacker';
 import { ArrayBufferReader } from './Core/ArrayBuffer/ArrayBufferReader';
 import { ArrayBufferWriter } from './Core/ArrayBuffer/ArrayBufferWriter';
 import { Registry } from './Core/Registry';
-import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
+import { CharacterPoolRegistry } from './CharacterPool/CharacterPoolRegistry';
 
 describe('xcom2charpool', () => {
     const poolPath = path.join(__dirname, '../storage/validation.bin');
@@ -17,25 +18,20 @@ describe('xcom2charpool', () => {
     } catch {}
 
     itif(poolExists)('should recreate charpool', async () => {
-        const registry = new Registry({
-            arrays: new Map(
-                Object.entries({
-                    CharacterPool: ArrayOfStructs,
-                    ExtraDatas: ArrayOfStructs,
-                    AppearanceStore: ArrayOfStructs,
-                    CharacterPoolLoadout: ArrayOfStructs,
-                    UniformSettings: ArrayOfStructs,
-                    CosmeticOptions: ArrayOfStructs,
-                }),
-            ),
-        });
+        const registry = new CharacterPoolRegistry();
 
         const original = await fs.readFile(poolPath);
         const charpool = await readCharpool(original, registry);
         const serialized = await generateCharpool(charpool.state, charpool.data, registry);
-        expect(serialized).toEqual(original.buffer);
+        const deserialized = await readCharpool(Buffer.from(serialized), registry);
+
+        await fs.writeFile(poolPath + '.generated', Buffer.from(serialized));
+
+        expect(md5(Buffer.from(serialized))).toEqual(md5(original));
     });
 });
+
+const md5 = (buf: Buffer) => crypto.createHash('md5').update(buf).digest('hex');
 
 function itif(condition: boolean) {
     return condition ? test : test.skip;
@@ -45,11 +41,9 @@ async function readCharpool(buffer: Buffer, registry: Registry) {
     // Create a DataView from the buffer
     const dataView = new DataView(buffer.buffer);
 
-
-
     // Initialize the reader and unpacker
     const reader = new ArrayBufferReader(dataView);
-    const unpacker = new Unpacker(reader, registry);
+    const unpacker = new CharacterPoolUnpacker(reader, registry);
 
     // Parse the file
     return unpacker.readFile();
@@ -58,7 +52,7 @@ async function readCharpool(buffer: Buffer, registry: Registry) {
 async function generateCharpool(state: Record<string, any>, data: any, registry: Registry) {
     // Initialize the writer and packer
     const writer = new ArrayBufferWriter();
-    const packer = new Packer(writer, registry);
+    const packer = new CharacterPoolPacker(writer, registry);
 
     // Serialize the data into binary format
     packer.writeFile({ state, data });

@@ -1,6 +1,6 @@
 import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
-import { Packer } from '../../Packer';
+import type { Packer } from '../Packer';
 import { NoneProperty } from './NoneProperty';
 
 export class StructProperty {

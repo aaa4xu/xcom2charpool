@@ -6,13 +6,13 @@ import { NameProperty } from './Properties/NameProperty';
 import { StrProperty } from './Properties/StrProperty';
 import { StructProperty } from './Properties/StructProperty';
 import { ArrayProperty } from './Properties/ArrayProperty';
-import { ArrayFactory } from '../Arrays/ArrayFactory';
+import { ArrayFactory } from './Arrays/ArrayFactory';
 
 export class Registry {
     private readonly types: Map<string, PropertyConstructor<unknown>> = new Map();
-    private readonly arrays: Map<string, ArrayFactory<unknown>>;
+    private readonly arrays: Map<string, ArrayFactory<unknown>> = new Map();
 
-    public constructor(options: RegistryOptions) {
+    public constructor() {
         // Built-in types
         this.types.set(BoolProperty.type, BoolProperty);
         this.types.set(ByteProperty.type, ByteProperty);
@@ -21,14 +21,16 @@ export class Registry {
         this.types.set(StrProperty.type, StrProperty);
         this.types.set(StructProperty.type, StructProperty);
         this.types.set(ArrayProperty.type, ArrayProperty);
-        // Additional types
-        if (options.properties) {
-            for (const [k, v] of options.properties) {
-                this.types.set(k, v);
-            }
-        }
-        // Array types
-        this.arrays = options.arrays ?? new Map();
+    }
+
+    public registerType(type: string, factory: PropertyConstructor<unknown>) {
+        this.types.set(type, factory);
+        return this;
+    }
+
+    public registerArray(arrayName: string, factory: ArrayFactory<unknown>) {
+        this.arrays.set(arrayName, factory);
+        return this;
     }
 
     public type(typeName: string): PropertyConstructor<unknown> | undefined {
@@ -45,8 +47,3 @@ export class Registry {
 }
 
 export type PropertyConstructor<T> = PropertyFactory<T> & (new (...args: any[]) => unknown);
-
-export interface RegistryOptions {
-    properties?: Map<string, PropertyConstructor<unknown>>;
-    arrays?: Map<string, ArrayFactory<unknown>>;
-}

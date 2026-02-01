@@ -1,27 +1,15 @@
-import type { Writer } from './Core/Writer';
-import { ArrayProperty } from './Core/Properties/ArrayProperty';
-import { NoneProperty } from './Core/Properties/NoneProperty';
-import { CharacterPoolDataElements } from './Arrays/CharacterPoolDataElements';
-import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
-import { Registry } from './Core/Registry';
+import type { Writer } from './Writer';
+import { Registry } from './Registry';
+import { TypedArray } from './Arrays/TypedArray';
+import { IntProperty } from './Properties/IntProperty';
+import { StrProperty } from './Properties/StrProperty';
+import { BoolProperty } from './Properties/BoolProperty';
 
 export class Packer {
-    public constructor(protected readonly writer: Writer, protected readonly registry: Registry) {}
-
-    public writeFile(data: { state: Record<string, any>; data: CharacterPoolDataElements }) {
-        // Write the magic number
-        this.writer.uint32(0xffffffff);
-
-        // Write the properties
-        this.writeProperties(data.state);
-
-        // Write the 'None' property to signify the end of properties
-        NoneProperty.to(this.writer);
-
-        // Write the 'CharacterPoolDataElements' array
-        // Assuming data.data.items is the array of elements
-        ArrayProperty.to(this.writer, data.data.items, this);
-    }
+    public constructor(
+        protected readonly writer: Writer,
+        protected readonly registry: Registry,
+    ) {}
 
     public writeProperties(obj: Record<string, any>) {
         for (const [name, value] of Object.entries(obj)) {
@@ -31,38 +19,37 @@ export class Packer {
 
     public writeProperty(name: string, property: any, isArrayElement = false) {
         // Determine property type
-        let type = typeof property === 'object' && 'constructor' in property ? property.constructor.name : '';
+        let type = typeof property === 'object' && 'constructor' in property ? property.constructor.type : '';
 
         switch (typeof property) {
             case 'number':
-                type = 'IntProperty';
+                type = IntProperty.type;
                 break;
 
             case 'string':
-                type = 'StrProperty';
+                type = StrProperty.type;
                 break;
 
             case 'boolean':
-                type = 'BoolProperty';
+                type = BoolProperty.type;
                 break;
 
             case 'object':
-                if (property instanceof ArrayOfStructs) {
+                if (property instanceof TypedArray) {
                     property = property.items;
                     type = 'ArrayProperty';
                 }
 
-                if (
-                    !Array.isArray(property) &&
-                    !this.registry.findType(property)
-                ) {
+                if (Array.isArray(property)) {
+                    type = 'ArrayProperty';
+                }
+
+                if (!Array.isArray(property) && !this.registry.findType(property)) {
                     type = 'StructProperty';
                 }
 
                 break;
         }
-
-        if (type === 'Array') type = 'ArrayProperty';
 
         if (!type) {
             throw new Error(`Property type is missing for property with name ${name}`);

@@ -1,6 +1,7 @@
 import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
-import { Packer } from '../../Packer';
+import type { Packer } from '../Packer';
+import { StructProperty } from './StructProperty';
 
 export class ArrayProperty {
     public static readonly type = 'ArrayProperty';
@@ -35,8 +36,22 @@ export class ArrayProperty {
             return;
         }
 
+        // UE4 may store arrays of empty structs as length-only (size=4). Detect that from data.
+        if (this.isLengthOnlyStructArray(value)) {
+            return;
+        }
+
         for (let i = 0; i < value.length; i++) {
             packer.writeProperty('', value[i], true);
         }
+    }
+
+    private static isLengthOnlyStructArray(value: readonly unknown[]): boolean {
+        if (value.length === 0) return false;
+        for (const item of value) {
+            if (!(item instanceof StructProperty)) return false;
+            if (!item.value || Object.keys(item.value).length > 0) return false;
+        }
+        return true;
     }
 }

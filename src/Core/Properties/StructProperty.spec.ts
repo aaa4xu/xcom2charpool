@@ -1,20 +1,20 @@
 import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
 import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
-import { Packer } from '../../Packer';
-import { Unpacker } from '../../Unpacker';
+import { Packer } from '../Packer';
+import { Unpacker } from '../Unpacker';
 import { StructProperty } from './StructProperty';
 import { Registry } from '../Registry';
 
 describe('StructProperty', () => {
     test('round-trips empty struct with type preserved', () => {
         const writer = new ArrayBufferWriter();
-        const packer = new Packer(writer, new Registry({}));
+        const packer = new Packer(writer, new Registry());
         const original = new StructProperty('TestStruct', {});
 
         packer.writeProperty('TestStructProp', original);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        const unpacker = new Unpacker(reader, new Registry({}));
+        const unpacker = new Unpacker(reader, new Registry());
         const parsed = unpacker.property();
 
         expect(parsed?.name).toBe('TestStructProp');
