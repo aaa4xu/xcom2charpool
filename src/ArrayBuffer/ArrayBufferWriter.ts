@@ -146,4 +146,12 @@ export class ArrayBufferWriter implements Writer {
     public getBuffer() {
         return this.#buffer.slice(0, this.#length);
     }
+
+    public bytes(value: Uint8Array): Writer {
+        this.ensureCapacity(value.length);
+        new Uint8Array(this.#buffer, this.position, value.length).set(value);
+        this.position += value.length;
+        this.#length = Math.max(this.#length, this.position);
+        return this;
+    }
 }

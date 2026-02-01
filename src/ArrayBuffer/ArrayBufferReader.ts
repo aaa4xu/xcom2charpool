@@ -103,4 +103,17 @@ export class ArrayBufferReader implements Reader {
         // Exclude the null terminator
         return decoder.decode(bytes.subarray(0, bytes.length - (isUTF16 ? 2 : 1)));
     }
+
+    public bytes(length: number): Uint8Array {
+        if (length < 0) {
+            throw new Error('Attempt to read negative byte length');
+        }
+        if (this.#position + length > this.length) {
+            throw new Error('Attempt to read beyond buffer length in bytes');
+        }
+        const start = this.source.byteOffset + this.#position;
+        const bytes = new Uint8Array(this.source.buffer, start, length);
+        this.#position += length;
+        return bytes;
+    }
 }

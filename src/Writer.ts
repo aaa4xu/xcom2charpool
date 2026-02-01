@@ -27,4 +27,9 @@ export interface Writer {
      * Uses some sort of ANSI for ASCII strings and UTF-16LE for strings with non-ASCII characters.
      */
     string(value: string): Writer;
+
+    /**
+     * Writes a raw byte sequence at the current position.
+     */
+    bytes(value: Uint8Array): Writer;
 }
