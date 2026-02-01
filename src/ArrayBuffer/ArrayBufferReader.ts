@@ -37,27 +37,21 @@ export class ArrayBufferReader implements Reader {
     }
 
     public uint32() {
-        if (this.#position + 4 > this.length) {
-            throw new Error('Attempt to read beyond buffer length in uint32');
-        }
+        this.ensureAvailable(4, 'uint32');
         const value = this.source.getUint32(this.#position, true);
         this.#position += 4;
         return value;
     }
 
     public int32() {
-        if (this.#position + 4 > this.length) {
-            throw new Error('Attempt to read beyond buffer length in int32');
-        }
+        this.ensureAvailable(4, 'int32');
         const value = this.source.getInt32(this.#position, true);
         this.#position += 4;
         return value;
     }
 
     public byte() {
-        if (this.#position + 1 > this.length) {
-            throw new Error('Attempt to read beyond buffer length in byte');
-        }
+        this.ensureAvailable(1, 'byte');
         const value = this.source.getUint8(this.#position);
         this.#position += 1;
         return value;
@@ -86,9 +80,7 @@ export class ArrayBufferReader implements Reader {
         // Adjust length for UTF-16 encoding
         if (isUTF16) length = length * -2;
 
-        if (this.#position + length > this.length) {
-            throw new Error('Attempt to read beyond buffer length in string');
-        }
+        this.ensureAvailable(length, 'string');
 
         const start = this.source.byteOffset + this.#position;
         const bytes = new Uint8Array(this.source.buffer, start, length);
@@ -108,12 +100,16 @@ export class ArrayBufferReader implements Reader {
         if (length < 0) {
             throw new Error('Attempt to read negative byte length');
         }
-        if (this.#position + length > this.length) {
-            throw new Error('Attempt to read beyond buffer length in bytes');
-        }
+        this.ensureAvailable(length, 'bytes');
         const start = this.source.byteOffset + this.#position;
         const bytes = new Uint8Array(this.source.buffer, start, length);
         this.#position += length;
         return bytes;
+    }
+
+    private ensureAvailable(size: number, context: string): void {
+        if (this.#position + size > this.length) {
+            throw new Error(`Attempt to read beyond buffer length in ${context}. Offset: ${this.#position}, requested: ${size}, remaining: ${this.length - this.#position}`);
+        }
     }
 }
