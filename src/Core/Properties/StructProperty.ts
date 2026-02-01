@@ -22,10 +22,19 @@ export class StructProperty {
         if (size > 0) {
             type = reader.string();
             reader.padding();
-        } else {
-            type = name;
+
+            const payload = reader.subarray(size);
+            const des = factory(payload);
+            const value = des.properties();
+            if (payload.position !== payload.length) {
+                throw new Error(
+                    `StructProperty "${name}" payload size mismatch: ${payload.length - payload.position} bytes remaining`,
+                );
+            }
+            return new this(type, value);
         }
 
+        type = name;
         const des = factory(reader);
         const value = des.properties();
         return new this(type, value);

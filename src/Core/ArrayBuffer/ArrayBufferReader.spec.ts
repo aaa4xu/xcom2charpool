@@ -24,6 +24,16 @@ describe('ArrayBufferReader', () => {
             expect(unpacker.position).toBe(unpacker.length);
         },
     );
+
+    test('subarray throws on negative length', () => {
+        const bufReader = reader([0x00]);
+        expect(() => bufReader.subarray(-1)).toThrow('negative length');
+    });
+
+    test('subarray throws when exceeding remaining bytes', () => {
+        const bufReader = reader([0x00]);
+        expect(() => bufReader.subarray(2)).toThrow('subarray');
+    });
 });
 
 function reader(buffer: number[] | Buffer): Reader {

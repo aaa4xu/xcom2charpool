@@ -7,10 +7,10 @@ describe('ByteProperty', () => {
         const original = new ByteProperty('ETestEnum', 'ETE_AlwaysOn');
         const writer = new ArrayBufferWriter();
 
-        ByteProperty.to(writer, original);
+        const size = ByteProperty.to(writer, original);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        const parsed = ByteProperty.from(reader, 'TestEnum', 0);
+        const parsed = ByteProperty.from(reader, 'TestEnum', size);
 
         expect(parsed).toBeInstanceOf(ByteProperty);
         expect(parsed.type).toBe(original.type);
@@ -39,10 +39,10 @@ describe('ByteProperty', () => {
         const original = new ByteProperty('', '');
         const writer = new ArrayBufferWriter();
 
-        ByteProperty.to(writer, original);
+        const size = ByteProperty.to(writer, original);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        const parsed = ByteProperty.from(reader, 'TestEmpty', 0);
+        const parsed = ByteProperty.from(reader, 'TestEmpty', size);
 
         expect(parsed.type).toBe('');
         expect(parsed.value).toBe('');
@@ -52,15 +52,37 @@ describe('ByteProperty', () => {
         const original = new ByteProperty('ETestEnum', 'ETE_AlwaysOn');
         const writer = new ArrayBufferWriter();
 
-        ByteProperty.to(writer, original);
+        const size = ByteProperty.to(writer, original);
         const endPosition = writer.position;
         writer.byte(0x7f);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        ByteProperty.from(reader, 'TestEnum', 0);
+        ByteProperty.from(reader, 'TestEnum', size);
 
         expect(reader.position).toBe(endPosition);
         expect(reader.byte()).toBe(0x7f);
+    });
+
+    test('throws when size is too small for payload', () => {
+        const original = new ByteProperty('ETestEnum', 'ETE_AlwaysOn');
+        const writer = new ArrayBufferWriter();
+        const size = ByteProperty.to(writer, original);
+
+        const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
+        expect(() => ByteProperty.from(reader, 'TestEnum', size - 1)).toThrow();
+    });
+
+    test('throws when payload has trailing bytes', () => {
+        const original = new ByteProperty('ETestEnum', 'ETE_AlwaysOn');
+        const writer = new ArrayBufferWriter();
+        const size = ByteProperty.to(writer, original);
+
+        const originalBuffer = writer.getBuffer();
+        const extended = new ArrayBuffer(originalBuffer.byteLength + 4);
+        new Uint8Array(extended).set(new Uint8Array(originalBuffer));
+
+        const reader = new ArrayBufferReader(new DataView(extended));
+        expect(() => ByteProperty.from(reader, 'TestEnum', size + 4)).toThrow(/payload size mismatch/);
     });
 
     test('throws on non-zero padding after enum type', () => {

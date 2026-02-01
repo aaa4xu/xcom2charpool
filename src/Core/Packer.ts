@@ -22,8 +22,18 @@ export class Packer {
     }
 
     public writeProperty(name: string, property: any, isArrayElement = false) {
+        if (property === null || property === undefined) {
+            throw new Error(`Property "${name}" is ${property === null ? 'null' : 'undefined'}`);
+        }
+
         // Determine property type
-        let type = typeof property === 'object' && 'constructor' in property ? property.constructor.type : '';
+        let type = '';
+        if (typeof property === 'object') {
+            const ctorType = (property as { constructor?: { type?: string } })?.constructor?.type;
+            if (typeof ctorType === 'string') {
+                type = ctorType;
+            }
+        }
 
         switch (typeof property) {
             case 'number':
@@ -48,8 +58,10 @@ export class Packer {
                     type = 'ArrayProperty';
                 }
 
-                if (!Array.isArray(property) && !this.registry.findType(property)) {
-                    type = 'StructProperty';
+                if (!type && !Array.isArray(property) && !this.registry.findType(property)) {
+                    throw new Error(
+                        `Unsupported object value for "${name}". Wrap structs into StructProperty.`,
+                    );
                 }
 
                 break;

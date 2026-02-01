@@ -66,6 +66,10 @@ export class ArrayBufferReader implements Reader {
     }
 
     public subarray(length: number) {
+        if (length < 0) {
+            throw new Error('Attempt to subarray negative length');
+        }
+        this.ensureAvailable(length, 'subarray');
         const sub = new ArrayBufferReader(this.source, this.#position, this.#position + length);
         this.#position += length;
 

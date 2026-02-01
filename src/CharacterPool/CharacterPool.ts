@@ -26,8 +26,12 @@ export class CharacterPool<TSchema extends ZodType<CharacterPoolFile>> {
         this.registry = registry;
     }
 
-    public read(data: ArrayBuffer): z.output<TSchema> {
-        const reader = new ArrayBufferReader(new DataView(data));
+    public read(data: ArrayBuffer | ArrayBufferView): z.output<TSchema> {
+        const view =
+            data instanceof ArrayBuffer
+                ? new Uint8Array(data)
+                : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+        const reader = new ArrayBufferReader(new DataView(view.buffer, view.byteOffset, view.byteLength));
         const unpacker = this.createPoolUnpacker(reader);
         const file = unpacker.readFile();
 

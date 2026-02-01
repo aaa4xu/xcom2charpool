@@ -17,8 +17,14 @@ export class ByteProperty {
         const type = reader.string();
         reader.padding();
 
-        const value = reader.string();
-        reader.padding();
+        const payload = reader.subarray(size);
+        const value = payload.string();
+        payload.padding();
+        if (payload.position !== payload.length) {
+            throw new Error(
+                `ByteProperty "${name}" payload size mismatch: ${payload.length - payload.position} bytes remaining`,
+            );
+        }
 
         return new this(type, value);
     }
