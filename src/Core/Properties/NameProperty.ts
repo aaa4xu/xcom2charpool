@@ -2,10 +2,9 @@ import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
 
 /**
- * Public name, available to the world.
- * Names are stored as a combination of an index into a table of unique strings and an instance number.
- * Names are case-insensitive, but case-preserving.
- * Instance stored internally as 1 more than actual, so zero'd memory will be the default, no-instance case.
+ * UE4 NameProperty (FName) representation: string + instanceId.
+ * Used by the packer/unpacker to preserve case-sensitive names and instance suffixes.
+ * Instance is stored as 1 more than the actual value so zero means "no instance".
  */
 export class NameProperty {
     public static readonly type = 'NameProperty';

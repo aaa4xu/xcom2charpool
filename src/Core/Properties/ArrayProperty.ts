@@ -3,6 +3,10 @@ import type { Writer } from '../Writer';
 import type { Packer } from '../Packer';
 import { StructProperty } from './StructProperty';
 
+/**
+ * UE4 ArrayProperty that stores length and exposes a reader for the element payload.
+ * Unpacker uses this to parse array elements, while Packer serializes arrays back out.
+ */
 export class ArrayProperty {
     public static readonly type = 'ArrayProperty';
 

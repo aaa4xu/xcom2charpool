@@ -3,6 +3,10 @@ import type { Writer } from '../Writer';
 import type { Packer } from '../Packer';
 import { NoneProperty } from './NoneProperty';
 
+/**
+ * UE4 StructProperty that wraps a nested property bag with a struct type name.
+ * Used for complex nested records and array elements in the charpool format.
+ */
 export class StructProperty {
     public static readonly type = 'StructProperty';
 

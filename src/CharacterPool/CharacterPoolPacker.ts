@@ -5,6 +5,10 @@ import { Packer as CorePacker } from '../Core/Packer';
 import { CharacterPoolRegistry } from './CharacterPoolRegistry';
 import type { Writer } from '../Core/Writer';
 
+/**
+ * File-level packer for XCOM 2 character pool binaries.
+ * Writes the magic, property state, and trailing CharacterPoolDataElements array.
+ */
 export class CharacterPoolPacker extends CorePacker {
     public constructor(writer: Writer, registry = new CharacterPoolRegistry()) {
         super(writer, registry);

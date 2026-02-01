@@ -1,7 +1,10 @@
 import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
 
-/** Enum */
+/**
+ * UE4 ByteProperty that stores enum type + enum value as strings.
+ * Used by Packer/Unpacker to round-trip enum fields in the charpool data.
+ */
 export class ByteProperty {
     public static readonly type = 'ByteProperty';
 

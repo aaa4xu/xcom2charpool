@@ -1,5 +1,6 @@
 export * from './CharacterPool/CharacterPoolPacker';
 export * from './CharacterPool/CharacterPoolUnpacker';
+export * from './CharacterPool/CharacterPoolRegistry';
 
 export * from './Core/Registry';
 

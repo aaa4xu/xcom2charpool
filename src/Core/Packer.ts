@@ -5,6 +5,10 @@ import { IntProperty } from './Properties/IntProperty';
 import { StrProperty } from './Properties/StrProperty';
 import { BoolProperty } from './Properties/BoolProperty';
 
+/**
+ * Core serializer for UE4-style property graphs.
+ * Uses Registry to resolve property factories and writes names/types/sizes in binary form.
+ */
 export class Packer {
     public constructor(
         protected readonly writer: Writer,

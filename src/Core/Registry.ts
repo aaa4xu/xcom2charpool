@@ -8,6 +8,10 @@ import { StructProperty } from './Properties/StructProperty';
 import { ArrayProperty } from './Properties/ArrayProperty';
 import { ArrayFactory } from './Arrays/ArrayFactory';
 
+/**
+ * Central registry for property and array factories.
+ * Packer/Unpacker consult this to map type names and array names to constructors.
+ */
 export class Registry {
     private readonly types: Map<string, PropertyConstructor<unknown>> = new Map();
     private readonly arrays: Map<string, ArrayFactory<unknown>> = new Map();

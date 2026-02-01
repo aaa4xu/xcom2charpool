@@ -3,6 +3,10 @@ import { NoneProperty } from './Properties/NoneProperty';
 import { ArrayProperty } from './Properties/ArrayProperty';
 import { Registry } from './Registry';
 
+/**
+ * Core deserializer for UE4-style property graphs.
+ * Uses Registry to resolve property factories and builds JS objects from binary data.
+ */
 export class Unpacker {
     public get position() {
         return this.reader.position;

@@ -1,6 +1,10 @@
 import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
 
+/**
+ * UE4 IntProperty for 32-bit signed integers.
+ * Used for numeric fields in the charpool property graph.
+ */
 export class IntProperty {
     public static readonly type = 'IntProperty';
 

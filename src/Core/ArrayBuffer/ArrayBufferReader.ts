@@ -1,7 +1,10 @@
 import type { Reader } from '../Reader';
 import { UE4StringCodec } from '../UE4StringCodec';
 
-/** Implementation based on browser's DataView */
+/**
+ * DataView-backed Reader that provides primitive reads and UE4 string decoding.
+ * Used by Unpacker and property factories as the low-level binary source.
+ */
 export class ArrayBufferReader implements Reader {
     #position = 0;
     #length: number;

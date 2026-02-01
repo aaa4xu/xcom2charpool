@@ -1,7 +1,10 @@
 import { Writer } from '../Writer';
 import { UE4StringCodec } from '../UE4StringCodec';
 
-/** Implementation based on browser's DataView */
+/**
+ * DataView-backed Writer with auto-growing buffer and UE4 string encoding.
+ * Used by Packer and property factories to serialize binary data.
+ */
 export class ArrayBufferWriter implements Writer {
     public position = 0;
     #length = 0; // Actual length of data written
