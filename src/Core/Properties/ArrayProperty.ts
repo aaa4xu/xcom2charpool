@@ -1,6 +1,6 @@
 import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
-import { Packer } from '../Packer';
+import { Packer } from '../../Packer';
 
 export class ArrayProperty {
     public static readonly type = 'ArrayProperty';

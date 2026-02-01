@@ -1,37 +1,19 @@
-import type { Reader } from './Reader';
-import { PropertyFactory } from './PropertyFactory';
-import { NoneProperty } from './Properties/NoneProperty';
-import { ArrayProperty } from './Properties/ArrayProperty';
-import { BoolProperty } from './Properties/BoolProperty';
-import { ByteProperty } from './Properties/ByteProperty';
-import { IntProperty } from './Properties/IntProperty';
-import { NameProperty } from './Properties/NameProperty';
-import { StrProperty } from './Properties/StrProperty';
-import { StructProperty } from './Properties/StructProperty';
+import type { Reader } from './Core/Reader';
+import { PropertyFactory } from './Core/PropertyFactory';
+import { NoneProperty } from './Core/Properties/NoneProperty';
+import { ArrayProperty } from './Core/Properties/ArrayProperty';
+import { BoolProperty } from './Core/Properties/BoolProperty';
+import { ByteProperty } from './Core/Properties/ByteProperty';
+import { IntProperty } from './Core/Properties/IntProperty';
+import { NameProperty } from './Core/Properties/NameProperty';
+import { StrProperty } from './Core/Properties/StrProperty';
+import { StructProperty } from './Core/Properties/StructProperty';
 import { CharacterPoolDataElements } from './Arrays/CharacterPoolDataElements';
 import { ArrayFactory } from './Arrays/ArrayFactory';
 import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
+import { Registry } from './Core/Registry';
 
 export class Unpacker {
-    public static types: Record<string, PropertyFactory<unknown>> = {
-        [ArrayProperty.type]: ArrayProperty,
-        [BoolProperty.type]: BoolProperty,
-        [ByteProperty.type]: ByteProperty,
-        [IntProperty.type]: IntProperty,
-        [NameProperty.type]: NameProperty,
-        [StrProperty.type]: StrProperty,
-        [StructProperty.type]: StructProperty,
-    };
-
-    public static knownArrays: Record<string, ArrayFactory<unknown>> = {
-        CharacterPool: ArrayOfStructs,
-        ExtraDatas: ArrayOfStructs,
-        AppearanceStore: ArrayOfStructs,
-        CharacterPoolLoadout: ArrayOfStructs,
-        UniformSettings: ArrayOfStructs,
-        CosmeticOptions: ArrayOfStructs,
-    };
-
     public get position() {
         return this.reader.position;
     }
@@ -40,7 +22,9 @@ export class Unpacker {
         return this.reader.length;
     }
 
-    public constructor(protected readonly reader: Reader) {}
+    public constructor(protected readonly reader: Reader, protected readonly registry: Registry) {
+
+    }
 
     public readFile() {
         const magic = this.reader.uint32();
@@ -57,7 +41,7 @@ export class Unpacker {
             CharacterPoolDataElements.name,
             this.reader.length - this.reader.position,
         ) as ArrayProperty;
-        const data = new CharacterPoolDataElements(arr, (reader: Reader) => new Unpacker(reader));
+        const data = new CharacterPoolDataElements(arr, (reader: Reader) => new Unpacker(reader, this.registry));
 
         if (this.reader.position < this.reader.length) {
             throw new Error(
@@ -90,7 +74,7 @@ export class Unpacker {
         const type = this.reader.string();
         this.reader.padding();
 
-        const factory = (<typeof Unpacker>this.constructor).types[type];
+        const factory = this.registry.type(type);
         if (!factory) {
             throw new Error(`Unknown property type ${type} with name ${name}`);
         }
@@ -98,14 +82,14 @@ export class Unpacker {
         const size = this.reader.uint32();
         this.reader.padding();
 
-        const property = factory.from(this.reader, name, size, (reader: Reader) => new Unpacker(reader));
+        const property = factory.from(this.reader, name, size, (reader: Reader) => new Unpacker(reader, this.registry));
 
         if (property instanceof ArrayProperty) {
-            const factory = (<typeof Unpacker>this.constructor).knownArrays[name];
+            const factory = this.registry.array(name);
             if (factory) {
-                return { name, property: factory.from(property, name, (reader: Reader) => new Unpacker(reader)) };
+                return { name, property: factory.from(property, name, (reader: Reader) => new Unpacker(reader, this.registry)) };
             } else {
-                console.warn(`[Unpacker] Array of unknown type ${name}`);
+                return { name, property };
             }
         }
 

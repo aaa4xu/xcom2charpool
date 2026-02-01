@@ -1,5 +1,5 @@
-import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
-import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
+import { ArrayBufferReader } from './ArrayBuffer/ArrayBufferReader';
+import { ArrayBufferWriter } from './ArrayBuffer/ArrayBufferWriter';
 import { UE4StringCodec } from './UE4StringCodec';
 
 describe('UE4StringCodec', () => {

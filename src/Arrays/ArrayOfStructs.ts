@@ -1,6 +1,6 @@
-import type { Reader } from '../Reader';
-import { ArrayProperty } from '../Properties/ArrayProperty';
-import { StructProperty } from '../Properties/StructProperty';
+import type { Reader } from '../Core/Reader';
+import { ArrayProperty } from '../Core/Properties/ArrayProperty';
+import { StructProperty } from '../Core/Properties/StructProperty';
 
 export class ArrayOfStructs {
     public readonly items: ReadonlyArray<StructProperty>;

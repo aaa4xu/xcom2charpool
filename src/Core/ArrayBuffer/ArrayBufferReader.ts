@@ -1,5 +1,5 @@
 import type { Reader } from '../Reader';
-import { UE4StringCodec } from '../Core/UE4StringCodec';
+import { UE4StringCodec } from '../UE4StringCodec';
 
 /** Implementation based on browser's DataView */
 export class ArrayBufferReader implements Reader {

@@ -1,6 +1,6 @@
-import type { Reader } from '../Reader';
-import { ArrayProperty } from '../Properties/ArrayProperty';
-import { IntProperty } from '../Properties/IntProperty';
+import type { Reader } from '../Core/Reader';
+import { ArrayProperty } from '../Core/Properties/ArrayProperty';
+import { IntProperty } from '../Core/Properties/IntProperty';
 
 export class ArrayOfInt {
     public static from(array: ArrayProperty, elementsType: string, factory: (reader: Reader) => any) {

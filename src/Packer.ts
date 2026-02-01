@@ -1,28 +1,12 @@
-import type { Writer } from './Writer';
-import { PropertyFactory } from './PropertyFactory';
-import { ArrayProperty } from './Properties/ArrayProperty';
-import { BoolProperty } from './Properties/BoolProperty';
-import { ByteProperty } from './Properties/ByteProperty';
-import { IntProperty } from './Properties/IntProperty';
-import { NameProperty } from './Properties/NameProperty';
-import { StrProperty } from './Properties/StrProperty';
-import { StructProperty } from './Properties/StructProperty';
-import { NoneProperty } from './Properties/NoneProperty';
+import type { Writer } from './Core/Writer';
+import { ArrayProperty } from './Core/Properties/ArrayProperty';
+import { NoneProperty } from './Core/Properties/NoneProperty';
 import { CharacterPoolDataElements } from './Arrays/CharacterPoolDataElements';
 import { ArrayOfStructs } from './Arrays/ArrayOfStructs';
+import { Registry } from './Core/Registry';
 
 export class Packer {
-    public static types: Record<string, PropertyFactory<unknown>> = {
-        [ArrayProperty.type]: ArrayProperty,
-        [BoolProperty.type]: BoolProperty,
-        [ByteProperty.type]: ByteProperty,
-        [IntProperty.type]: IntProperty,
-        [NameProperty.type]: NameProperty,
-        [StrProperty.type]: StrProperty,
-        [StructProperty.type]: StructProperty,
-    };
-
-    public constructor(protected readonly writer: Writer) {}
+    public constructor(protected readonly writer: Writer, protected readonly registry: Registry) {}
 
     public writeFile(data: { state: Record<string, any>; data: CharacterPoolDataElements }) {
         // Write the magic number
@@ -70,7 +54,7 @@ export class Packer {
 
                 if (
                     !Array.isArray(property) &&
-                    !Object.values((<typeof Packer>this.constructor).types).find((t: any) => property instanceof t)
+                    !this.registry.findType(property)
                 ) {
                     type = 'StructProperty';
                 }
@@ -84,7 +68,7 @@ export class Packer {
             throw new Error(`Property type is missing for property with name ${name}`);
         }
 
-        const factory = (<typeof Packer>this.constructor).types[type];
+        const factory = this.registry.type(type);
         if (!factory) {
             throw new Error(`Unknown property type ${type} with name ${name}`);
         }

@@ -1,7 +1,8 @@
 import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
 import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
-import { Unpacker } from '../Unpacker';
+import { Unpacker } from '../../Unpacker';
 import { NoneProperty } from './NoneProperty';
+import { Registry } from '../Registry';
 
 describe('NoneProperty', () => {
     test('terminates property list without consuming trailing bytes', () => {
@@ -11,7 +12,7 @@ describe('NoneProperty', () => {
         writer.byte(0x7f);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        const unpacker = new Unpacker(reader);
+        const unpacker = new Unpacker(reader, new Registry({}));
         const props = unpacker.properties();
 
         expect(props).toStrictEqual({});

@@ -1,7 +1,8 @@
 import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
 import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
-import { Packer } from '../Packer';
+import { Packer } from '../../Packer';
 import { ArrayProperty } from './ArrayProperty';
+import { Registry } from '../Registry';
 
 describe('ArrayProperty', () => {
     test('from reads length and preserves trailing bytes', () => {
@@ -58,7 +59,7 @@ describe('ArrayProperty', () => {
     test('to writes length and elements', () => {
         const values = [10, -20, 30];
         const writer = new ArrayBufferWriter();
-        const packer = new Packer(writer);
+        const packer = new Packer(writer, new Registry({}));
 
         ArrayProperty.to(writer, values, packer);
 
@@ -71,7 +72,7 @@ describe('ArrayProperty', () => {
 
     test('to with empty array writes only length', () => {
         const writer = new ArrayBufferWriter();
-        const packer = new Packer(writer);
+        const packer = new Packer(writer, new Registry({}));
 
         ArrayProperty.to(writer, [], packer);
 

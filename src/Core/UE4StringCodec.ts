@@ -1,5 +1,5 @@
-import type { Reader } from '../Reader';
-import type { Writer } from '../Writer';
+import type { Reader } from './Reader';
+import type { Writer } from './Writer';
 
 /**
  * FString serialization based on UE4 rules:

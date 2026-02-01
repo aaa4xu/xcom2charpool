@@ -1,6 +1,7 @@
 import { ArrayBufferWriter } from './ArrayBufferWriter';
-import { Packer } from '../Packer';
+import { Packer } from '../../Packer';
 import { binary as cases } from './__fixtures__/binary';
+import { Registry } from '../Registry';
 
 describe('ArrayBufferWriter', () => {
     test.each(
@@ -11,7 +12,7 @@ describe('ArrayBufferWriter', () => {
         ]),
     )('should write %s', (_, fn, data) => {
         const writer = new ArrayBufferWriter();
-        const packer = new Packer(writer);
+        const packer = new Packer(writer, new Registry({}));
         fn(packer);
         expect(new Uint8Array(writer.getBuffer())).toStrictEqual(Uint8Array.from(data));
     });
