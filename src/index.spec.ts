@@ -1,7 +1,6 @@
 import { statSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import crypto from 'node:crypto';
 import { CharacterPoolUnpacker } from './CharacterPool/CharacterPoolUnpacker';
 import { CharacterPoolPacker } from './CharacterPool/CharacterPoolPacker';
 import { ArrayBufferReader } from './Core/ArrayBuffer/ArrayBufferReader';
@@ -23,15 +22,10 @@ describe('xcom2charpool', () => {
         const original = await fs.readFile(poolPath);
         const charpool = await readCharpool(original, registry);
         const serialized = await generateCharpool(charpool.state, charpool.data, registry);
-        const deserialized = await readCharpool(Buffer.from(serialized), registry);
 
-        await fs.writeFile(poolPath + '.generated', Buffer.from(serialized));
-
-        expect(md5(Buffer.from(serialized))).toEqual(md5(original));
+        expect(Buffer.from(serialized)).toEqual(original);
     });
 });
-
-const md5 = (buf: Buffer) => crypto.createHash('md5').update(buf).digest('hex');
 
 function itif(condition: boolean) {
     return condition ? test : test.skip;
