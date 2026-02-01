@@ -8,7 +8,7 @@ import { PropertyFactory } from '../PropertyFactory';
  * Produced by array factories to preserve element typing across unpack/pack.
  */
 export class TypedArray<T> {
-    public constructor(public readonly items: ReadonlyArray<T>) {}
+    public constructor(public readonly items: Array<T>) {}
 
     public static of<T>(type: PropertyFactory<T>): ArrayFactory<TypedArray<T>> {
         return {

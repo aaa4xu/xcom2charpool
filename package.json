@@ -29,5 +29,8 @@
     "package.json",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
 }

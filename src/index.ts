@@ -1,6 +1,7 @@
 export * from './CharacterPool/CharacterPoolPacker';
 export * from './CharacterPool/CharacterPoolUnpacker';
 export * from './CharacterPool/CharacterPoolRegistry';
+export * from './CharacterPool/CharacterPool';
 
 export * from './Core/Registry';
 
@@ -24,3 +25,10 @@ export * from './Core/Properties/StrProperty';
 export * from './Core/Properties/StructProperty';
 export * from './Core/Arrays/ArrayFactory';
 export * from './Core/Arrays/TypedArray';
+
+export * from './Schema/CharacterPoolDataItemSchema';
+export * from './Schema/CharacterPoolSchema';
+export * from './Schema/NamePropertySchema';
+export * from './Schema/StructPropertySchema';
+export * from './Schema/TAppearanceSchema';
+export * from './Schema/TypedArrayOfStructSchema';

@@ -3,7 +3,7 @@
 ## Overview
 
 `xcom2charpool` is a TypeScript library designed for reading and manipulating the charpool binary files used in the [XCOM 2](https://www.xcom.com) game. It provides a robust set of tools for parsing, serializing, and managing the complex data structures within these binary files, enabling developers and modders to create, modify, and analyze charpool data efficiently.
-The library is not tied to a specific fs implementation; however, it includes an ArrayBuffer-based implementation that works seamlessly in both browser and Node.js environments. The core architecture is built around a Registry-driven Packer/Unpacker pair and UE4-compatible string serialization.
+The library is not tied to a specific fs implementation; however, it includes an ArrayBuffer-based implementation that works seamlessly in both browser and Node.js environments. The core architecture is built around a Registry-driven Packer/Unpacker pair, plus a higher-level `CharacterPool` wrapper and Zod schemas for validation and typed access.
 
 ## Installation
 
@@ -13,12 +13,11 @@ npm i xcom2charpool
 
 ## Usage
 
+### High-level API
+
 ```typescript
 import {
-    ArrayBufferReader,
-    ArrayBufferWriter,
-    CharacterPoolPacker,
-    CharacterPoolUnpacker,
+    CharacterPool,
 } from 'xcom2charpool';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -26,61 +25,24 @@ import * as os from 'node:os';
 
 async function main() {
     const charpoolPath = path.join(os.homedir(), 'Documents/My Games/XCOM2 War of the Chosen/XComGame/CharacterPool');
-    const registry = new CharacterPoolRegistry();
+    const charpool = CharacterPool.create();
 
-    // Read data from the current character pool
-    const { state, data } = await readCharpool(path.join(charpoolPath, 'DefaultCharacterPool.bin'), registry);
+    const file = await fs.readFile(path.join(charpoolPath, 'DefaultCharacterPool.bin'));
+    const pool = charpool.read(file);
 
     console.log('Soldiers:');
-    for (const soldier of data.items) {
+    for (const soldier of pool.data.items) {
         console.log(`- ${soldier.value.strFirstName} ${soldier.value.strNickName} ${soldier.value.strLastName}`);
     }
 
     // Change name for characters
-    for (const char of data.items) {
+    for (const char of pool.data.items) {
         char.value.strFirstName = 'XCom';
         char.value.strLastName = 'Studio';
     }
 
-    // Save data to new character pool
-    await writeCharpool(path.join(charpoolPath, 'Importable', 'XCom-Studio.bin'), state, data, registry);
-}
-
-// Function to read and parse a charpool binary file
-async function readCharpool(filePath: string) {
-    // Read the binary file
-    const buffer = await fs.readFile(filePath);
-
-    // Create a DataView from the buffer
-    const dataView = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-
-    // Initialize the reader and unpacker
-    const reader = new ArrayBufferReader(dataView);
-    const unpacker = new CharacterPoolUnpacker(reader);
-
-    // Parse the file
-    return unpacker.readFile();
-}
-
-// Function to create and write a charpool binary file
-async function writeCharpool(
-    filePath: string,
-    state: Record<string, any>,
-    data: any,
-) {
-    // Initialize the writer and packer
-    const writer = new ArrayBufferWriter();
-    const packer = new CharacterPoolPacker(writer);
-
-    // Serialize the data into binary format
-    packer.writeFile({ state, data });
-
-    // Retrieve the binary buffer
-    const buffer = writer.getBuffer();
-    console.log(buffer.byteLength);
-
-    // Write the buffer to a file
-    await fs.writeFile(filePath, Buffer.from(buffer));
+    const output = charpool.write(pool);
+    await fs.writeFile(path.join(charpoolPath, 'Importable', 'XCom-Studio.bin'), Buffer.from(output));
 }
 
 main();
@@ -88,10 +50,18 @@ main();
 
 ## API Reference
 
+-   **High-level helpers:**
+    -   `CharacterPool`: Schema-aware wrapper over packer/unpacker.
+    -   `CharacterPool.create()`: Uses built-in schema + registry defaults.
 -   **Character pool helpers:**
     -   `CharacterPoolRegistry`: Preconfigured registry for known character pool array names.
     -   `CharacterPoolUnpacker`: File-level reader for charpool binaries.
     -   `CharacterPoolPacker`: File-level writer for charpool binaries.
+-   **Schemas (Zod v4):**
+    -   `CharacterPoolSchema`: Full file schema (state + data).
+    -   `CharacterPoolDataItemSchema`: Soldier data schema.
+    -   `TAppearanceSchema`: Appearance struct schema.
+    -   `NamePropertySchema`, `StructPropertySchema`, `TypedArrayOfStructSchema`: Building blocks for custom schemas.
 -   **Core serialization:**
     -   `Registry`: Registry of property and array factories.
     -   `Packer`: Serializes property graphs into UE4 binary format.
