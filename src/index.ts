@@ -5,14 +5,14 @@ export * from './CharacterPool/CharacterPool';
 
 export * from './Core/Registry';
 
-export * from './Core/Reader';
-export * from './Core/Writer';
+export * from './Reader';
+export * from './Writer';
 
 export * from './Core/Packer';
 export * from './Core/Unpacker';
 
-export * from './Core/ArrayBuffer/ArrayBufferReader';
-export * from './Core/ArrayBuffer/ArrayBufferWriter';
+export * from './ArrayBuffer/ArrayBufferReader';
+export * from './ArrayBuffer/ArrayBufferWriter';
 
 export * from './Core/PropertyFactory';
 export * from './Core/Properties/ArrayProperty';
