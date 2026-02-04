@@ -1,5 +1,5 @@
 import type { Reader } from '../Reader';
-import { UE4StringCodec } from '../UE4StringCodec';
+import { FSting } from '../UE/FSting';
 
 /**
  * DataView-backed Reader that provides primitive reads and UE4 string decoding.
@@ -27,14 +27,6 @@ export class ArrayBufferReader implements Reader {
 
     public get position(): number {
         return this.#position;
-    }
-
-    public rewind(offset: number) {
-        const newPosition = this.#position + offset;
-        if (newPosition < 0 || newPosition > this.length) {
-            throw new Error('Rewind results in invalid position');
-        }
-        this.#position = newPosition;
     }
 
     public uint32() {
@@ -66,7 +58,6 @@ export class ArrayBufferReader implements Reader {
     }
 
     public subarray(length: number) {
-        // @TODO Refactor with bytes
         if (length < 0) {
             throw new Error('Attempt to subarray negative length');
         }
@@ -78,11 +69,10 @@ export class ArrayBufferReader implements Reader {
     }
 
     public string() {
-        return UE4StringCodec.read(this);
+        return FSting.read(this);
     }
 
     public bytes(length: number): Uint8Array {
-        // @TODO Refactor with subarray
         if (length < 0) {
             throw new Error('Attempt to read negative byte length');
         }

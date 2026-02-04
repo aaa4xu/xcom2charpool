@@ -1,58 +1,58 @@
-import { ArrayBufferReader } from './ArrayBuffer/ArrayBufferReader';
-import { ArrayBufferWriter } from './ArrayBuffer/ArrayBufferWriter';
-import { UE4StringCodec } from './UE4StringCodec';
+import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
+import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
+import { FSting } from './FSting';
 
-describe('UE4StringCodec', () => {
+describe('FString', () => {
     test('writes and reads empty string', () => {
         const writer = new ArrayBufferWriter();
-        UE4StringCodec.write(writer, '');
+        FSting.write(writer, '');
 
         expect(toBytes(writer)).toStrictEqual(Uint8Array.from([0x00, 0x00, 0x00, 0x00]));
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        expect(UE4StringCodec.read(reader)).toBe('');
+        expect(FSting.read(reader)).toBe('');
     });
 
     test('writes and reads ANSI (8-bit) string', () => {
         const value = 'Hello world';
         const writer = new ArrayBufferWriter();
-        UE4StringCodec.write(writer, value);
+        FSting.write(writer, value);
 
         const expected = Uint8Array.from([
             ...int32Bytes(value.length + 1),
             ...Buffer.from(value, 'latin1'),
-            UE4StringCodec.NullByte,
+            FSting.NullByte,
         ]);
 
         expect(toBytes(writer)).toStrictEqual(expected);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        expect(UE4StringCodec.read(reader)).toBe(value);
+        expect(FSting.read(reader)).toBe(value);
     });
 
     test('writes and reads UTF-16 string', () => {
         const value = 'Привет';
         const writer = new ArrayBufferWriter();
-        UE4StringCodec.write(writer, value);
+        FSting.write(writer, value);
 
         const expected = Uint8Array.from([
             ...int32Bytes(-(value.length + 1)),
             ...Buffer.from(value, 'utf16le'),
-            UE4StringCodec.NullByte,
-            UE4StringCodec.NullByte,
+            FSting.NullByte,
+            FSting.NullByte,
         ]);
 
         expect(toBytes(writer)).toStrictEqual(expected);
 
         const reader = new ArrayBufferReader(new DataView(writer.getBuffer()));
-        expect(UE4StringCodec.read(reader)).toBe(value);
+        expect(FSting.read(reader)).toBe(value);
     });
 
     test('throws on missing ANSI terminator', () => {
         const bytes = Uint8Array.from([...int32Bytes(4), 0x41, 0x42, 0x43, 0x44]);
         const reader = new ArrayBufferReader(new DataView(bytes.buffer));
 
-        expect(() => UE4StringCodec.read(reader)).toThrow(/terminator/i);
+        expect(() => FSting.read(reader)).toThrow(/terminator/i);
     });
 });
 

@@ -1,5 +1,5 @@
 import { Writer } from '../Writer';
-import { UE4StringCodec } from '../UE4StringCodec';
+import { FSting } from '../UE/FSting';
 
 /**
  * DataView-backed Writer with auto-growing buffer and UE4 string encoding.
@@ -19,7 +19,7 @@ export class ArrayBufferWriter implements Writer {
     /**
      * Writes a 32-bit unsigned integer at the current position.
      */
-    uint32(value: number) {
+    public uint32(value: number) {
         this.ensureCapacity(4);
         this.#dataView.setUint32(this.position, value, true);
         this.position += 4;
@@ -30,7 +30,7 @@ export class ArrayBufferWriter implements Writer {
     /**
      * Writes a 32-bit signed integer at the current position.
      */
-    int32(value: number) {
+    public int32(value: number) {
         this.ensureCapacity(4);
         this.#dataView.setInt32(this.position, value, true);
         this.position += 4;
@@ -41,7 +41,7 @@ export class ArrayBufferWriter implements Writer {
     /**
      * Writes a byte at the current position.
      */
-    byte(value: number) {
+    public byte(value: number) {
         this.ensureCapacity(1);
         this.#dataView.setUint8(this.position, value);
         this.position += 1;
@@ -52,7 +52,7 @@ export class ArrayBufferWriter implements Writer {
     /**
      * Writes padding (4 zero bytes) at the current position.
      */
-    padding() {
+    public padding() {
         this.uint32(0);
         return this;
     }
@@ -61,7 +61,7 @@ export class ArrayBufferWriter implements Writer {
      * Writes a string using UE4StringCodec
      */
     public string(value: string) {
-        UE4StringCodec.write(this, value);
+        FSting.write(this, value);
         return this;
     }
 
@@ -78,15 +78,6 @@ export class ArrayBufferWriter implements Writer {
         new Uint8Array(this.#buffer, this.position, value.length).set(value);
         this.position += value.length;
         this.#length = Math.max(this.#length, this.position);
-        return this;
-    }
-
-    public rewind(offset: number) {
-        const newPosition = this.position + offset;
-        if (newPosition < 0) {
-            throw new Error('Rewind results in invalid position');
-        }
-        this.position = newPosition;
         return this;
     }
 

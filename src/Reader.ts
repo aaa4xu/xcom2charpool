@@ -3,8 +3,6 @@ export interface Reader {
     readonly length: number;
     readonly position: number;
 
-    rewind(offset: number): void;
-
     uint32(): number;
 
     int32(): number;

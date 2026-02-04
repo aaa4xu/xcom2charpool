@@ -33,7 +33,5 @@ export interface Writer {
      */
     bytes(value: Uint8Array): Writer;
 
-    rewind(offset: number): Writer;
-
     withLength(fn: () => void | number): void | number;
 }

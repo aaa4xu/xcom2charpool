@@ -1,5 +1,5 @@
-import type { Reader } from './Reader';
-import type { Writer } from './Writer';
+import type { Reader } from '../Reader';
+import type { Writer } from '../Writer';
 
 /**
  * UE4 FString codec used by Reader/Writer implementations.
@@ -7,7 +7,7 @@ import type { Writer } from './Writer';
  * - Positive length: 8-bit bytes (low byte of UCS-2), null-terminated.
  * - Negative length: UTF-16LE code units, null-terminated.
  */
-export class UE4StringCodec {
+export class FSting {
     public static readonly NullByte = 0x00;
 
     public static read(reader: Reader): string {
@@ -15,10 +15,10 @@ export class UE4StringCodec {
         if (length === 0) return '';
 
         if (length > 0) {
-            return UE4StringCodec.readAnsi(reader, length);
+            return FSting.readAnsi(reader, length);
         }
 
-        return UE4StringCodec.readUtf16(reader, length);
+        return FSting.readUtf16(reader, length);
     }
 
     public static write(writer: Writer, value: string): void {
@@ -27,27 +27,27 @@ export class UE4StringCodec {
             return;
         }
 
-        if (UE4StringCodec.isAnsi(value)) {
-            const encoded = UE4StringCodec.encodeAnsi(value);
+        if (FSting.isAnsi(value)) {
+            const encoded = FSting.encodeAnsi(value);
             writer.int32(encoded.length + 1);
             writer.bytes(encoded);
-            writer.byte(UE4StringCodec.NullByte);
+            writer.byte(FSting.NullByte);
             return;
         } else {
-            const encoded = UE4StringCodec.encodeUtf16LE(value);
+            const encoded = FSting.encodeUtf16LE(value);
             const codeUnitCount = value.length + 1; // Negative length in number of 16-bit code units + null terminator
             writer.int32(-codeUnitCount);
             writer.bytes(encoded);
-            writer.byte(UE4StringCodec.NullByte).byte(UE4StringCodec.NullByte); // Two bytes null terminator for UTF-16
+            writer.byte(FSting.NullByte).byte(FSting.NullByte); // Two bytes null terminator for UTF-16
         }
     }
 
     private static readAnsi(reader: Reader, length: number): string {
         const bytes = reader.bytes(length);
-        if (bytes[bytes.length - 1] !== UE4StringCodec.NullByte) {
+        if (bytes[bytes.length - 1] !== FSting.NullByte) {
             throw new Error('Invalid FString ANSI terminator');
         }
-        return UE4StringCodec.decodeAnsi(bytes.subarray(0, bytes.length - 1));
+        return FSting.decodeAnsi(bytes.subarray(0, bytes.length - 1));
     }
 
     private static readUtf16(reader: Reader, length: number): string {
@@ -61,10 +61,10 @@ export class UE4StringCodec {
             throw new Error('Invalid FString UTF-16 length');
         }
         const last = bytes.length - 1;
-        if (bytes[last] !== UE4StringCodec.NullByte || bytes[last - 1] !== UE4StringCodec.NullByte) {
+        if (bytes[last] !== FSting.NullByte || bytes[last - 1] !== FSting.NullByte) {
             throw new Error('Invalid FString UTF-16 terminator');
         }
-        return UE4StringCodec.decodeUtf16LE(bytes.subarray(0, bytes.length - 2));
+        return FSting.decodeUtf16LE(bytes.subarray(0, bytes.length - 2));
     }
 
     private static isAnsi(value: string): boolean {
