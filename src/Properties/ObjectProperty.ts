@@ -60,7 +60,16 @@ export class ObjectProperty extends BaseCodec implements Codec<ObjectPropertyVal
         const codec = ctx.registry.resolveByValue(value);
 
         if (!codec) {
-            throw new CodecError(`Cannot find codec for value ${value}`, this.fullPath(ctx));
+            const kind =
+                value === null
+                    ? 'null'
+                    : Array.isArray(value)
+                      ? 'array'
+                      : typeof value === 'object'
+                        ? ((value as any).constructor?.name ?? 'object')
+                        : typeof value;
+
+            throw new CodecError(`Cannot find codec for value ${kind}`, this.fullPath(ctx));
         }
 
         writer.string(name).padding();
