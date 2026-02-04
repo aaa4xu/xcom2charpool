@@ -2,7 +2,7 @@ import type { Reader } from '../Reader';
 import type { Writer } from '../Writer';
 
 /**
- * UE4 FString codec used by Reader/Writer implementations.
+ * FString codec used by Reader/Writer implementations.
  * Length prefix is int32 including null terminator:
  * - Positive length: 8-bit bytes (low byte of UCS-2), null-terminated.
  * - Negative length: UTF-16LE code units, null-terminated.
