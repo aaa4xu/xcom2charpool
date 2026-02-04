@@ -23,6 +23,7 @@ export class CharacterPoolFileWithIAM {
     }
 
     public write(writer: Writer, file: unknown) {
+        IAMCharacterPoolSchema.parse(file);
         this.file.write(writer, file);
     }
 }
