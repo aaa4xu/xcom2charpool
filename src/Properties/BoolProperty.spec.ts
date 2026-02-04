@@ -1,7 +1,6 @@
 import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
 import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
 import { BoolProperty } from './BoolProperty';
-import { IntProperty } from './Int/IntProperty';
 import { CodecRegistry } from '../Registry';
 
 describe('BoolProperty', () => {
