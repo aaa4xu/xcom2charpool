@@ -1,6 +1,6 @@
 {
     "name": "xcom2charpool",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Library for reading, manipulating, and managing XCOM 2 character pool binary files, supporting both browser and Node.js environments.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
