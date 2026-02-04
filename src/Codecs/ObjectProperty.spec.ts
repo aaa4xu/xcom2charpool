@@ -125,30 +125,15 @@ describe('ObjectProperty', () => {
             ],
 
             {
-                test1: new StructPropertyValue(
-                    'TestStruct',
-                    new Map(
-                        Object.entries({
-                            TestStructValue: 'value1',
-                        }),
-                    ),
-                ),
-                test2: new StructPropertyValue(
-                    'TestStruct',
-                    new Map(
-                        Object.entries({
-                            TestStructValue: 'value2',
-                        }),
-                    ),
-                ),
-                test3: new StructPropertyValue(
-                    'TestStruct',
-                    new Map(
-                        Object.entries({
-                            TestStructValue: 'value3',
-                        }),
-                    ),
-                ),
+                test1: new StructPropertyValue('TestStruct', {
+                    TestStructValue: 'value1',
+                }),
+                test2: new StructPropertyValue('TestStruct', {
+                    TestStructValue: 'value2',
+                }),
+                test3: new StructPropertyValue('TestStruct', {
+                    TestStructValue: 'value3',
+                }),
             },
         ],
         [
@@ -243,7 +228,7 @@ describe('ObjectProperty', () => {
         };
 
         const data = object.read(reader, 0, ctx);
-        expect(data).toStrictEqual(new Map(Object.entries(expected)));
+        expect(data).toStrictEqual(expected);
 
         object.write(writer, data, ctx);
         // console.log('data', data);

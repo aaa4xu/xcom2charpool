@@ -1,4 +1,4 @@
-import { ObjectProperty } from '../Codecs/ObjectProperty';
+import { ObjectProperty, ObjectPropertyValue } from '../Codecs/ObjectProperty';
 import { ArrayProperty, ArrayPropertyValue } from '../Codecs/ArrayProperty';
 import { Reader } from '../Reader';
 import { Writer } from '../Writer';
@@ -52,6 +52,6 @@ export class CharacterPoolFile extends BaseCodec {
 }
 
 export interface CharacterPoolFileData {
-    Props: Map<string, unknown>;
+    Props: ObjectPropertyValue;
     CharacterPool: ArrayPropertyValue;
 }

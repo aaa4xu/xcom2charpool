@@ -5,9 +5,9 @@ import { CodecContext } from '../CodecContext';
 import { BaseCodec } from '../BaseCodec';
 import { CodecError } from '../Errors/CodecError';
 
-export class ObjectProperty extends BaseCodec implements Codec<Map<string, unknown>> {
-    public read(reader: Reader, length: number, ctx: CodecContext): Map<string, unknown> {
-        const result = new Map<string, unknown>();
+export class ObjectProperty extends BaseCodec implements Codec<ObjectPropertyValue> {
+    public read(reader: Reader, length: number, ctx: CodecContext): ObjectPropertyValue {
+        const result: ObjectPropertyValue = {};
 
         let terminated = false;
         while (reader.position < reader.length) {
@@ -16,7 +16,7 @@ export class ObjectProperty extends BaseCodec implements Codec<Map<string, unkno
                 terminated = true;
                 break;
             }
-            result.set(prop[0], prop[1]);
+            result[prop[0]] = prop[1];
         }
 
         if (!terminated) {
@@ -26,8 +26,8 @@ export class ObjectProperty extends BaseCodec implements Codec<Map<string, unkno
         return result;
     }
 
-    public write(writer: Writer, value: Map<string, unknown>, ctx: CodecContext): void {
-        for (const [name, v] of value.entries()) {
+    public write(writer: Writer, value: ObjectPropertyValue, ctx: CodecContext): void {
+        for (const [name, v] of Object.entries(value)) {
             this.writeProperty(writer, name, v, this.childContext(name, ctx));
         }
 
@@ -70,3 +70,4 @@ export class ObjectProperty extends BaseCodec implements Codec<Map<string, unkno
 }
 
 type ObjectPropertyItem = [name: string, value: unknown];
+export type ObjectPropertyValue = Record<string, unknown>;
