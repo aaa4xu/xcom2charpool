@@ -1,7 +1,7 @@
-import { ArrayElementCodec } from '../ArrayElementCodec';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
+import { ArrayElementCodec } from '../../ArrayElementCodec';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
 
 export class IntArrayElement implements ArrayElementCodec<number> {
     public read(reader: Reader, ctx: CodecContext): number {

@@ -1,10 +1,10 @@
-import { TypeCodec } from '../TypeCodec';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
-import { ObjectProperty } from './ObjectProperty';
-import { StructPropertyValue } from '../Values/StructPropertyValue';
-import { BaseCodec } from '../BaseCodec';
+import { TypeCodec } from '../../TypeCodec';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
+import { ObjectProperty } from '../ObjectProperty';
+import { StructPropertyValue } from './StructPropertyValue';
+import { BaseCodec } from '../../BaseCodec';
 
 export class StructProperty extends BaseCodec implements TypeCodec<StructPropertyValue> {
     public readonly type = 'StructProperty';

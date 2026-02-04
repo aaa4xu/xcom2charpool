@@ -1,8 +1,8 @@
-import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
-import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
-import { CodecRegistry } from '../Registry';
+import { ArrayBufferReader } from '../../ArrayBuffer/ArrayBufferReader';
+import { ArrayBufferWriter } from '../../ArrayBuffer/ArrayBufferWriter';
+import { CodecRegistry } from '../../Registry';
 import { IntProperty } from './IntProperty';
-import { CodecError } from '../Errors/CodecError';
+import { CodecError } from '../../Errors/CodecError';
 
 describe('IntProperty', () => {
     test.each([

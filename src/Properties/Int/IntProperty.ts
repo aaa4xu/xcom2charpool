@@ -1,9 +1,9 @@
-import { TypeCodec } from '../TypeCodec';
-import { Reader } from '../Reader';
-import { Writer } from '../Writer';
-import { BaseCodec } from '../BaseCodec';
-import { CodecContext } from '../CodecContext';
-import { CodecError } from '../Errors/CodecError';
+import { TypeCodec } from '../../TypeCodec';
+import { Reader } from '../../Reader';
+import { Writer } from '../../Writer';
+import { BaseCodec } from '../../BaseCodec';
+import { CodecContext } from '../../CodecContext';
+import { CodecError } from '../../Errors/CodecError';
 
 export class IntProperty extends BaseCodec implements TypeCodec<number> {
     public readonly type = 'IntProperty';

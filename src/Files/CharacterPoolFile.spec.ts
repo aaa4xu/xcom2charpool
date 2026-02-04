@@ -9,7 +9,7 @@ import { CharacterPoolFileWithIAM } from './CharacterPoolFileWithIAM';
 describe('CharacterPoolFile', () => {
     it.each([
         ['should recreate vanilla WOTC charpool', 'vanilla.bin', new CharacterPoolFile()],
-        ['should recreate WOTC+IAM charpool', 'iam.bin', new CharacterPoolFileWithIAM(new CharacterPoolFile())], // @TODO IAM specific file codec
+        ['should recreate WOTC+IAM charpool', 'iam.bin', new CharacterPoolFileWithIAM(new CharacterPoolFile())],
     ])(`%s`, async (_, filename, fileCodec) => {
         const original = await fixture(filename);
 

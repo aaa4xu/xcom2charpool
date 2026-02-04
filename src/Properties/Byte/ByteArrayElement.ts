@@ -1,10 +1,10 @@
-import { ArrayElementCodec } from '../ArrayElementCodec';
-import { BytePropertyValue } from '../Values/BytePropertyValue';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
-import { BaseCodec } from '../BaseCodec';
-import { CodecError } from '../Errors/CodecError';
+import { ArrayElementCodec } from '../../ArrayElementCodec';
+import { BytePropertyValue } from './BytePropertyValue';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
+import { BaseCodec } from '../../BaseCodec';
+import { CodecError } from '../../Errors/CodecError';
 
 export class ByteArrayElement extends BaseCodec implements ArrayElementCodec<BytePropertyValue> {
     public constructor(public readonly type: string) {

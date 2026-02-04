@@ -1,9 +1,9 @@
-import { TypeCodec } from '../TypeCodec';
-import { NamePropertyValue } from '../Values/NamePropertyValue';
-import { Reader } from '../Reader';
-import { Writer } from '../Writer';
-import { BaseCodec } from '../BaseCodec';
-import { CodecContext } from '../CodecContext';
+import { TypeCodec } from '../../TypeCodec';
+import { NamePropertyValue } from './NamePropertyValue';
+import { Reader } from '../../Reader';
+import { Writer } from '../../Writer';
+import { BaseCodec } from '../../BaseCodec';
+import { CodecContext } from '../../CodecContext';
 
 export class NameProperty extends BaseCodec implements TypeCodec<NamePropertyValue> {
     public readonly type = 'NameProperty';

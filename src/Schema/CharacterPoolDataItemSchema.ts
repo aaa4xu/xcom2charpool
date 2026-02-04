@@ -1,20 +1,19 @@
-import { z } from 'zod/v4';
-import { NamePropertySchema } from './NamePropertySchema';
-import { TypedArrayOfStructSchema } from './TypedArrayOfStructSchema';
+import z from 'zod/v4';
 import { TAppearanceSchema } from './TAppearanceSchema';
-import { StructPropertySchema } from './StructPropertySchema';
+import { NameSchema } from '../Properties/Name/NameSchema';
+import { StructSchema } from '../Properties/Struct/StructSchema';
 
 export const CharacterPoolDataItemSchema = z.looseObject({
     strFirstName: z.string(),
     strLastName: z.string(),
-    strNickName: z.string(),
-    m_SoldierClassTemplateName: NamePropertySchema,
-    CharacterTemplateName: NamePropertySchema,
-    kAppearance: StructPropertySchema('TAppearance', TAppearanceSchema),
-    Country: NamePropertySchema,
-    AllowedTypeSoldier: z.boolean(),
-    AllowedTypeVIP: z.boolean(),
-    AllowedTypeDarkVIP: z.boolean(),
+    strNickName: z.string().optional(),
+    m_SoldierClassTemplateName: NameSchema,
+    CharacterTemplateName: NameSchema,
+    kAppearance: StructSchema('TAppearance', TAppearanceSchema.partial()),
+    Country: NameSchema,
+    AllowedTypeSoldier: z.boolean().optional(),
+    AllowedTypeVIP: z.boolean().optional(),
+    AllowedTypeDarkVIP: z.boolean().optional(),
     PoolTimestamp: z.string(),
     BackgroundText: z.string(),
 });

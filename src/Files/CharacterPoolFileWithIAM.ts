@@ -1,8 +1,10 @@
-import { CharacterPoolFile, CharacterPoolFileData } from './CharacterPoolFile';
-import { StructArrayElement } from '../Codecs/StructArrayElement';
+import { CharacterPoolFile } from './CharacterPoolFile';
+import { StructArrayElement } from '../Properties/Struct/StructArrayElement';
 import { CodecRegistry } from '../Registry';
 import { Reader } from '../Reader';
 import { Writer } from '../Writer';
+import z from 'zod/v4';
+import { IAMCharacterPoolSchema } from '../Schema/IAMCharacterPoolSchema';
 
 export class CharacterPoolFileWithIAM {
     public constructor(private readonly file: CharacterPoolFile) {
@@ -14,11 +16,13 @@ export class CharacterPoolFileWithIAM {
         return this.file.registry;
     }
 
-    public read(reader: Reader): CharacterPoolFileData {
-        return this.file.read(reader);
+    public read(reader: Reader) {
+        const data = this.file.read(reader);
+        IAMCharacterPoolSchema.parse(data);
+        return data as z.infer<typeof IAMCharacterPoolSchema>;
     }
 
-    public write(writer: Writer, file: CharacterPoolFileData) {
+    public write(writer: Writer, file: unknown) {
         this.file.write(writer, file);
     }
 }

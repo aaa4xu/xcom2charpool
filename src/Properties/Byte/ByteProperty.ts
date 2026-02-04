@@ -1,9 +1,9 @@
-import { TypeCodec } from '../TypeCodec';
-import { BytePropertyValue } from '../Values/BytePropertyValue';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
-import { BaseCodec } from '../BaseCodec';
+import { TypeCodec } from '../../TypeCodec';
+import { BytePropertyValue } from './BytePropertyValue';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
+import { BaseCodec } from '../../BaseCodec';
 
 export class ByteProperty extends BaseCodec implements TypeCodec<BytePropertyValue> {
     public readonly type = 'ByteProperty';

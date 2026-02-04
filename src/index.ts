@@ -31,4 +31,4 @@ export * from './Schema/CharacterPoolSchema';
 export * from './Schema/NamePropertySchema';
 export * from './Schema/StructPropertySchema';
 export * from './Schema/TAppearanceSchema';
-export * from './Schema/TypedArrayOfStructSchema';
+export * from './Properties/Array/ArrayOfStructSchema';

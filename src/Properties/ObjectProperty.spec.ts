@@ -3,11 +3,11 @@ import { CodecRegistry } from '../Registry';
 import { ObjectProperty } from './ObjectProperty';
 import { CodecContext } from '../CodecContext';
 import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
-import { BytePropertyValue } from '../Values/BytePropertyValue';
-import { StructPropertyValue } from '../Values/StructPropertyValue';
-import { RawArrayValue } from '../Values/RawArrayValue';
-import { IntArrayElement } from './IntArrayElement';
-import { ByteArrayElement } from './ByteArrayElement';
+import { BytePropertyValue } from './Byte/BytePropertyValue';
+import { StructPropertyValue } from './Struct/StructPropertyValue';
+import { ArrayValue } from './Array/ArrayValue';
+import { IntArrayElement } from './Int/IntArrayElement';
+import { ByteArrayElement } from './Byte/ByteArrayElement';
 
 describe('ObjectProperty', () => {
     test.each([
@@ -157,7 +157,7 @@ describe('ObjectProperty', () => {
             ],
             {
                 test1intarr: [1, 2, 3, 1, 2, 3, 1, 2, 3],
-                test2intarr: new RawArrayValue(
+                test2intarr: new ArrayValue(
                     3,
                     new Uint8Array([0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00]),
                 ),
@@ -190,7 +190,7 @@ describe('ObjectProperty', () => {
                 0x00, 0x00,
             ],
             {
-                test2barr: new RawArrayValue(
+                test2barr: new ArrayValue(
                     3,
                     new Uint8Array([
                         0x12, 0x00, 0x00, 0x00, 0x45, 0x55, 0x53, 0x5f, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x53, 0x70, 0x65,

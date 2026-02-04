@@ -1,8 +1,8 @@
-import { ArrayBufferReader } from '../ArrayBuffer/ArrayBufferReader';
-import { ArrayBufferWriter } from '../ArrayBuffer/ArrayBufferWriter';
+import { ArrayBufferReader } from '../../ArrayBuffer/ArrayBufferReader';
+import { ArrayBufferWriter } from '../../ArrayBuffer/ArrayBufferWriter';
 import { NameProperty } from './NameProperty';
-import { NamePropertyValue } from '../Values/NamePropertyValue';
-import { CodecRegistry } from '../Registry';
+import { NamePropertyValue } from './NamePropertyValue';
+import { CodecRegistry } from '../../Registry';
 
 describe('NameProperty', () => {
     test.each([

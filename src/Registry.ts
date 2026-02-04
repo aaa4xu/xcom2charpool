@@ -1,12 +1,11 @@
 import { TypeCodec } from './TypeCodec';
-import { BoolProperty } from './Codecs/BoolProperty';
-import { IntProperty } from './Codecs/IntProperty';
-import { NameProperty } from './Codecs/NameProperty';
-import { StrProperty } from './Codecs/StrProperty';
-import { ByteProperty } from './Codecs/ByteProperty';
-import { StructProperty } from './Codecs/StructProperty';
-import { ArrayProperty } from './Codecs/ArrayProperty';
-import { Codec } from './Codec';
+import { BoolProperty } from './Properties/BoolProperty';
+import { IntProperty } from './Properties/Int/IntProperty';
+import { NameProperty } from './Properties/Name/NameProperty';
+import { StrProperty } from './Properties/StrProperty';
+import { ByteProperty } from './Properties/Byte/ByteProperty';
+import { StructProperty } from './Properties/Struct/StructProperty';
+import { ArrayProperty } from './Properties/Array/ArrayProperty';
 import { ArrayElementCodec } from './ArrayElementCodec';
 
 export class CodecRegistry {

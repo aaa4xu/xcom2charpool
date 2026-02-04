@@ -1,11 +1,11 @@
-import { ArrayElementCodec } from '../ArrayElementCodec';
-import { StructPropertyValue } from '../Values/StructPropertyValue';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
-import { ObjectProperty } from './ObjectProperty';
-import { CodecError } from '../Errors/CodecError';
-import { BaseCodec } from '../BaseCodec';
+import { ArrayElementCodec } from '../../ArrayElementCodec';
+import { StructPropertyValue } from './StructPropertyValue';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
+import { ObjectProperty } from '../ObjectProperty';
+import { CodecError } from '../../Errors/CodecError';
+import { BaseCodec } from '../../BaseCodec';
 
 export class StructArrayElement extends BaseCodec implements ArrayElementCodec<StructPropertyValue> {
     #codec = new ObjectProperty();

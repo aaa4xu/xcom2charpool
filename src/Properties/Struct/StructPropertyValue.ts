@@ -1,4 +1,4 @@
-import { ObjectPropertyValue } from '../Codecs/ObjectProperty';
+import { ObjectPropertyValue } from '../ObjectProperty';
 
 export class StructPropertyValue {
     public constructor(

@@ -1,10 +1,10 @@
-import { TypeCodec } from '../TypeCodec';
-import { Reader } from '../Reader';
-import { CodecContext } from '../CodecContext';
-import { Writer } from '../Writer';
-import { RawArrayValue } from '../Values/RawArrayValue';
-import { BaseCodec } from '../BaseCodec';
-import { CodecError } from '../Errors/CodecError';
+import { TypeCodec } from '../../TypeCodec';
+import { Reader } from '../../Reader';
+import { CodecContext } from '../../CodecContext';
+import { Writer } from '../../Writer';
+import { ArrayValue } from './ArrayValue';
+import { BaseCodec } from '../../BaseCodec';
+import { CodecError } from '../../Errors/CodecError';
 
 export class ArrayProperty extends BaseCodec implements TypeCodec<ArrayPropertyValue> {
     public readonly type = 'ArrayProperty';
@@ -24,13 +24,13 @@ export class ArrayProperty extends BaseCodec implements TypeCodec<ArrayPropertyV
             const count = payload.uint32();
 
             if (count > 0 && payload.position === payload.length) {
-                return new RawArrayValue(count, new Uint8Array(0));
+                return new ArrayValue(count, new Uint8Array(0));
             }
 
             // Unknown array: сохраняем сырой payload (после count) как bytes для round-trip.
             if (!element) {
                 const rest = payload.bytes(payload.length - payload.position).slice();
-                return new RawArrayValue(count, rest);
+                return new ArrayValue(count, rest);
             }
 
             const items: unknown[] = [];
@@ -45,7 +45,7 @@ export class ArrayProperty extends BaseCodec implements TypeCodec<ArrayPropertyV
     public write(writer: Writer, value: ArrayPropertyValue, ctx: CodecContext): void | number {
         const start = writer.position;
 
-        if (value instanceof RawArrayValue) {
+        if (value instanceof ArrayValue) {
             writer.uint32(value.count);
             writer.bytes(value.payload);
             return writer.position - start;
@@ -67,8 +67,8 @@ export class ArrayProperty extends BaseCodec implements TypeCodec<ArrayPropertyV
     }
 
     public isSupported(value: unknown): value is ArrayPropertyValue {
-        return Array.isArray(value) || value instanceof RawArrayValue;
+        return Array.isArray(value) || value instanceof ArrayValue;
     }
 }
 
-export type ArrayPropertyValue = Array<unknown> | RawArrayValue;
+export type ArrayPropertyValue = Array<unknown> | ArrayValue;
