@@ -2,8 +2,7 @@ import type { Reader } from '../Reader';
 import { FSting } from '../UE/FSting';
 
 /**
- * DataView-backed Reader that provides primitive reads and UE4 string decoding.
- * Used by Unpacker and property factories as the low-level binary source.
+ * ArrayBuffer-backed Reader implementation for binary decoding.
  */
 export class ArrayBufferReader implements Reader {
     #position = 0;

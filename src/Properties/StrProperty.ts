@@ -4,6 +4,9 @@ import { Writer } from '../Writer';
 import { BaseCodec } from '../BaseCodec';
 import { CodecContext } from '../CodecContext';
 
+/**
+ * Codec for UE StrProperty values.
+ */
 export class StrProperty extends BaseCodec implements TypeCodec<string> {
     public readonly type = 'StrProperty';
 

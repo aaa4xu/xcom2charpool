@@ -10,6 +10,9 @@ import { BaseCodec } from '../BaseCodec';
 import { CharacterPoolSchema } from '../Schema/CharacterPoolSchema';
 import z from 'zod/v4';
 
+/**
+ * Core file codec for vanilla CharacterPool binaries with schema validation and registry setup.
+ */
 export class CharacterPoolFile extends BaseCodec {
     private readonly ctx: CodecContext;
     private readonly obj = new ObjectProperty();

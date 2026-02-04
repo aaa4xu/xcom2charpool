@@ -1,3 +1,6 @@
+/**
+ * Value object for UE NameProperty including the instance id suffix.
+ */
 export class NamePropertyValue {
     #instanceId = 0;
 

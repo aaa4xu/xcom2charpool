@@ -2,8 +2,7 @@ import { Writer } from '../Writer';
 import { FSting } from '../UE/FSting';
 
 /**
- * DataView-backed Writer with auto-growing buffer and UE4 string encoding.
- * Used by Packer and property factories to serialize binary data.
+ * Auto-growing ArrayBuffer-backed Writer implementation for binary encoding.
  */
 export class ArrayBufferWriter implements Writer {
     public position = 0;

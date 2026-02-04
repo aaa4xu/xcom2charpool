@@ -5,6 +5,9 @@ import { CodecContext } from '../CodecContext';
 import { BaseCodec } from '../BaseCodec';
 import { CodecError } from '../Errors/CodecError';
 
+/**
+ * Codec for UE object property maps, reading/writing named property lists.
+ */
 export class ObjectProperty extends BaseCodec implements Codec<ObjectPropertyValue> {
     public read(reader: Reader, length: number, ctx: CodecContext): ObjectPropertyValue {
         const result: ObjectPropertyValue = {};

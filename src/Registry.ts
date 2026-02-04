@@ -8,6 +8,9 @@ import { StructProperty } from './Properties/Struct/StructProperty';
 import { ArrayProperty } from './Properties/Array/ArrayProperty';
 import { ArrayElementCodec } from './ArrayElementCodec';
 
+/**
+ * Central registry for property codecs and array element codecs used by readers/writers.
+ */
 export class CodecRegistry {
     private readonly types: Map<string, TypeCodec> = new Map();
     private readonly arrays: Map<string, ArrayElementCodec> = new Map();

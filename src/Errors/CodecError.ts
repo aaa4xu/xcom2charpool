@@ -1,3 +1,6 @@
+/**
+ * Error type for codec failures that carries the full property path for diagnostics.
+ */
 export class CodecError extends Error {
     public constructor(
         message: string,

@@ -2,6 +2,9 @@ import { Reader } from './Reader';
 import { CodecContext } from './CodecContext';
 import { CodecError } from './Errors/CodecError';
 
+/**
+ * Base class for codecs providing path-aware helpers and error wrapping.
+ */
 export abstract class BaseCodec {
     protected childContext(name: string, ctx: CodecContext): CodecContext {
         return {

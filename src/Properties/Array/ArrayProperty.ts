@@ -6,6 +6,9 @@ import { ArrayValue } from './ArrayValue';
 import { BaseCodec } from '../../BaseCodec';
 import { CodecError } from '../../Errors/CodecError';
 
+/**
+ * Codec for UE ArrayProperty values with element dispatch via the registry.
+ */
 export class ArrayProperty extends BaseCodec implements TypeCodec<ArrayPropertyValue> {
     public readonly type = 'ArrayProperty';
 

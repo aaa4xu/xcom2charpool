@@ -3,6 +3,9 @@ import { Reader } from '../../Reader';
 import { CodecContext } from '../../CodecContext';
 import { Writer } from '../../Writer';
 
+/**
+ * Array element codec for int32 arrays.
+ */
 export class IntArrayElement implements ArrayElementCodec<number> {
     public read(reader: Reader, ctx: CodecContext): number {
         return reader.int32();

@@ -5,6 +5,9 @@ import { Writer } from '../../Writer';
 import { BaseCodec } from '../../BaseCodec';
 import { CodecContext } from '../../CodecContext';
 
+/**
+ * Codec for UE NameProperty values, backed by NamePropertyValue.
+ */
 export class NameProperty extends BaseCodec implements TypeCodec<NamePropertyValue> {
     public readonly type = 'NameProperty';
 

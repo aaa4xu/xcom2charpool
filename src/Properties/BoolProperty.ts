@@ -5,6 +5,9 @@ import { BaseCodec } from '../BaseCodec';
 import { CodecError } from '../Errors/CodecError';
 import { CodecContext } from '../CodecContext';
 
+/**
+ * Codec for UE BoolProperty values.
+ */
 export class BoolProperty extends BaseCodec implements TypeCodec<boolean> {
     public readonly type = 'BoolProperty';
 

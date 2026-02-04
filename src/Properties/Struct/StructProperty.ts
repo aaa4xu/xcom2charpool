@@ -6,6 +6,9 @@ import { ObjectProperty } from '../ObjectProperty';
 import { StructPropertyValue } from './StructPropertyValue';
 import { BaseCodec } from '../../BaseCodec';
 
+/**
+ * Codec for UE StructProperty values.
+ */
 export class StructProperty extends BaseCodec implements TypeCodec<StructPropertyValue> {
     public readonly type = 'StructProperty';
     #codec = new ObjectProperty();

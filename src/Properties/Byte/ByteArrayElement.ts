@@ -6,6 +6,9 @@ import { Writer } from '../../Writer';
 import { BaseCodec } from '../../BaseCodec';
 import { CodecError } from '../../Errors/CodecError';
 
+/**
+ * Array element codec for BytePropertyValue entries inside ArrayProperty payloads.
+ */
 export class ByteArrayElement extends BaseCodec implements ArrayElementCodec<BytePropertyValue> {
     public constructor(public readonly type: string) {
         super();

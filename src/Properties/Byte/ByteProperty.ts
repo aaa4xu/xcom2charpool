@@ -5,6 +5,9 @@ import { CodecContext } from '../../CodecContext';
 import { Writer } from '../../Writer';
 import { BaseCodec } from '../../BaseCodec';
 
+/**
+ * Codec for UE ByteProperty values (stored as typed strings).
+ */
 export class ByteProperty extends BaseCodec implements TypeCodec<BytePropertyValue> {
     public readonly type = 'ByteProperty';
 

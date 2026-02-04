@@ -7,6 +7,9 @@ import { ObjectProperty } from '../ObjectProperty';
 import { CodecError } from '../../Errors/CodecError';
 import { BaseCodec } from '../../BaseCodec';
 
+/**
+ * Array element codec for struct entries in ArrayProperty payloads.
+ */
 export class StructArrayElement extends BaseCodec implements ArrayElementCodec<StructPropertyValue> {
     #codec = new ObjectProperty();
 

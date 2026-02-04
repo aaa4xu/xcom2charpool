@@ -5,6 +5,9 @@ import { BaseCodec } from '../../BaseCodec';
 import { CodecContext } from '../../CodecContext';
 import { CodecError } from '../../Errors/CodecError';
 
+/**
+ * Codec for UE IntProperty values.
+ */
 export class IntProperty extends BaseCodec implements TypeCodec<number> {
     public readonly type = 'IntProperty';
 

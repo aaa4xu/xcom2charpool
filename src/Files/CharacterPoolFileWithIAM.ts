@@ -6,6 +6,9 @@ import { Writer } from '../Writer';
 import z from 'zod/v4';
 import { IAMCharacterPoolSchema } from '../Schema/IAMCharacterPoolSchema';
 
+/**
+ * Wrapper that augments CharacterPoolFile with IAM-specific arrays and schema checks.
+ */
 export class CharacterPoolFileWithIAM {
     public constructor(private readonly file: CharacterPoolFile) {
         file.registry.registerArray('ExtraDatas', new StructArrayElement('ExtraData'));
