@@ -6,7 +6,8 @@ import { FSting } from '../UE/FSting';
  */
 export class ArrayBufferReader implements Reader {
     #position = 0;
-    #length: number;
+    #startOffset = 0;
+    #endOffset: number;
 
     public constructor(
         private readonly source: DataView,
@@ -15,17 +16,20 @@ export class ArrayBufferReader implements Reader {
     ) {
         if (typeof position === 'number') {
             this.#position = position;
+            this.#startOffset = position;
         }
 
-        this.#length = typeof length === 'number' ? length : source.byteLength;
+        this.#endOffset = typeof length === 'number' ? length : source.byteLength;
     }
 
+    /** Total byte count of this reader (or sub-reader). */
     public get length() {
-        return this.#length;
+        return this.#endOffset - this.#startOffset;
     }
 
+    /** Bytes consumed from the start of this reader (always starts at 0 for sub-readers). */
     public get position(): number {
-        return this.#position;
+        return this.#position - this.#startOffset;
     }
 
     public uint32() {
@@ -83,9 +87,9 @@ export class ArrayBufferReader implements Reader {
     }
 
     private ensureAvailable(size: number, context: string): void {
-        if (this.#position + size > this.length) {
+        if (this.#position + size > this.#endOffset) {
             throw new Error(
-                `Attempt to read beyond buffer length in ${context}. Offset: ${this.#position}, requested: ${size}, remaining: ${this.length - this.#position}`,
+                `Attempt to read beyond buffer length in ${context}. Offset: ${this.position}, requested: ${size}, remaining: ${this.length - this.position}`,
             );
         }
     }
